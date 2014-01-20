@@ -16057,7 +16057,7 @@ Abecedary.prototype.run = function(code, tests) {
     var runner = [
       'window.code = unescape("' + escape(code) + '");',
       'mocha.suite.suites.shift()',
-      tests || this.tests,
+      tests || _this.tests,
       'window.mocha.run();',
       true
     ].join('\n');
