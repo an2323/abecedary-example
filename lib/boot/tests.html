@@ -1,0 +1,30 @@
+var assert = require('chai').assert,
+    estraparse = require('esprima-jquery-map'),
+    sinon = require('sinon');
+
+describe('problem', function() {
+  before(function(){
+    this.tree = estraparse(code);
+  });
+
+  it("Within your `for` loop, you need to add an `if` statement.", function() {
+    assert(this.tree.find('forstatement ifstatement').length > 0);  
+  });
+  it("Within the `if` statement, you'll need to halve the number of sheep and log the message 'Removing <number> sheep from the population. Phew!' to the console.", function() {
+    var logInFor = this.tree.find("forstatement ifstatement identifier[name='console']+identifier[name='log']").length > 0;
+    assert(logInFor);
+  });
+
+  describe('with logging', function() {
+    before(function() {
+      sinon.spy(console, "log");
+      eval(window.code);
+    });
+    after(function() {
+      console.log.restore();
+    });
+    it("You are calling `console.log` too few times. This probably means the condition on your `if` statement is incorrect. Make sure it tests that `numSheep` is greater than 10000.", function() {
+      if(console.log.callCount < 18) { assert(false); }
+    });
+  });
+});

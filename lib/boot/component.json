@@ -1,0 +1,24 @@
+{
+  "name": "boot",
+  "description": "Abecedary demo",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {
+    "amasad/codemirror": "*",
+    "benatkin/codemirror-mode-javascript": "*",
+    "component/debounce": "*",
+    "component/dom": "*"
+  },
+  "local": ["abecedary"],
+  "license": "AAL",
+  "main": "index.js",
+  "scripts": [
+    "index.js",
+    "code.js",
+    "tests.js",
+    "iframe_template.js"
+  ],
+  "styles": [
+    "index.css"
+  ]
+}

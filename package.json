@@ -1,0 +1,20 @@
+{
+  "name": "abecedary",
+  "version": "0.0.1",
+  "description": "",
+  "main": "sandbox-suite.js",
+  "author": "",
+  "license": "AAL",
+  "dependencies": {
+    "mocha": "~1.17.0",
+    "sinon": "https://github.com/cjohansen/Sinon.JS/tarball/browserify",
+    "chai": "~1.8.1",
+    "jquery-browserify": "1.8.1",
+    "esprima-jquery-map": "git://github.com/codeschool/esprima-jquery-map.git#6c182cf026b8c99745df813680f488460191c3ad"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-browserify": "~1.3.0",
+    "grunt-contrib-concat": "~0.3.0"
+  }
+}
