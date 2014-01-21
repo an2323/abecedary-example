@@ -21081,6 +21081,23 @@ var jQuery =  require("jquery");
 
 module.exports = jQuery;
 });
+require.register("segmentio-extend/index.js", function(exports, require, module){
+
+module.exports = function extend (object) {
+    // Takes an unlimited number of extenders.
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    // For each extender, copy their properties on our object.
+    for (var i = 0, source; source = args[i]; i++) {
+        if (!source) continue;
+        for (var property in source) {
+            object[property] = source[property];
+        }
+    }
+
+    return object;
+};
+});
 require.register("visionmedia-mocha/mocha.js", function(exports, require, module){
 ;(function(){
 
@@ -27715,6 +27732,7 @@ var dom = require('dom');
 var debounce = require('debounce');
 var CodeMirror = require('codemirror');
 var Abcedary = require('abecedary');
+var extend = require('extend');
 var iframeTemplate = require('./iframe_template'); 
 require('codemirror-mode-javascript')(CodeMirror);
 
@@ -27722,32 +27740,22 @@ var code = require('./code');
 var tests = require('./tests');
 var answer = require('./answer');
 
+
+var options = {
+  indentUnit: 2,
+  tabSize: 2,
+  mode: 'javascript',
+  theme: 'vibrant-ink',
+  lineNumbers: true,
+  lineWrapping: true,
+  gutters: ["CodeMirror-foldgutter"]
+}
+
 var sandbox = new Abcedary('http://localhost:4000/iframe.html', iframeTemplate),
-    editor = new CodeMirror(dom('.editor')[0], { 
-      value: code, 
-      mode: 'javascript',
-      theme: 'vibrant-ink',
-      lineNumbers: true,
-      lineWrapping: true,
-      gutters: ["CodeMirror-foldgutter"]
-    }),
-    tests = new CodeMirror(dom('.tests')[0], {
-      value: tests,
-      mode: 'javascript',
-      theme: 'vibrant-ink',
-      lineNumbers: true,
-      lineWrapping: true,
-      gutters: ["CodeMirror-foldgutter"]
-    }),
-    answer = new CodeMirror(dom('.answer')[0], {
-      value: answer,
-      mode: 'javascript',
-      theme: 'vibrant-ink',
-      lineNumbers: true,
-      lineWrapping: true,
-      gutters: ["CodeMirror-foldgutter"],
-      readOnly: 'nocursor'
-    });
+    editor = new CodeMirror(dom('.editor')[0], extend({ value: code,
+    }, options)),
+    tests = new CodeMirror(dom('.tests')[0], extend({ value: tests }, options)),
+    answer = new CodeMirror(dom('.answer')[0], extend({ value: answer }, options));
 
 var runWrapper = debounce(function () {
   sandbox.run(editor.getValue(), tests.getValue())
@@ -27792,7 +27800,7 @@ require.register("boot/code.js", function(exports, require, module){
 module.exports = 'var numSheep = 4;\nvar monthsToPrint = 12;\n\nfor(var monthNumber = 1; monthNumber <= monthsToPrint; monthNumber++) {\n  \n  // Increment sheep and log here\n\n  numSheep*=4;\n  console.log("There will be " + numSheep + " sheep after " + monthNumber + " month(s)!");\n}';
 });
 require.register("boot/tests.js", function(exports, require, module){
-module.exports = 'var assert = require(\'chai\').assert,\n    estraparse = require(\'esprima-jquery-map\'),\n    sinon = require(\'sinon\');\n\ndescribe(\'problem\', function() {\n  before(function(){\n    this.tree = estraparse(code);\n  });\n\n  it("Within your `for` loop, you need to add an `if` statement.", function() {\n    assert(this.tree.find(\'forstatement ifstatement\').length > 0);  \n  });\n  it("Within the `if` statement, you\'ll need to halve the number of sheep and log the message \'Removing <number> sheep from the population. Phew!\' to the console.", function() {\n    var logInFor = this.tree.find("forstatement ifstatement identifier[name=\'console\']+identifier[name=\'log\']").length > 0;\n    assert(logInFor);\n  });\n\n  describe(\'with logging\', function() {\n    before(function() {\n      sinon.spy(console, "log");\n      eval(window.code);\n    });\n    after(function() {\n      console.log.restore();\n    });\n    it("You are calling `console.log` too few times. This probably means the condition on your `if` statement is incorrect. Make sure it tests that `numSheep` is greater than 10000.", function() {\n      if(console.log.callCount < 18) { assert(false); }\n    });\n  });\n});';
+module.exports = 'var assert = require(\'chai\').assert,\n    estraparse = require(\'esprima-jquery-map\'),\n    sinon = require(\'sinon\');\n\ndescribe(\'problem\', function() {\n  before(function(){\n    this.tree = estraparse(code);\n  });\n\n  it("Within your `for` loop, you need to add an `if` statement.", function() {\n    assert(this.tree.find(\'forstatement ifstatement\').length > 0);  \n  });\n  it("Within the `if` statement, you\'ll need to halve the number of sheep and log the message \'Removing <number> sheep from the population. Phew!\' to the console.", function() {\n    var logInFor = this.tree.find("forstatement ifstatement identifier[name=\'console\']+identifier[name=\'log\']").length > 0;\n    assert(logInFor);\n  });\n\n  describe(\'with logging\', function() {\n    before(function() {\n      sinon.spy(console, "log");\n      eval(window.code);\n    });\n    after(function() {\n      console.log.restore();\n    });\n    it("You are calling `console.log` too few times. This probably means the condition on your `if` statement is incorrect. Make sure it tests that `numSheep` is greater than 10000.", function() {\n      if(console.log.callCount < 18) { assert(false); }\n    });\n    it("You are calling `console.log` too many times. This probably means the condition on your `if` statement is incorrect. Make sure it tests that `numSheep` is greater than 10000.", function() {\n      if(console.log.callCount > 18) { assert(false); }\n    });\n    it("You\'re calling `console.log` the correct number of times, but not logging the correct messages. Are you diving the `numSheep` by 2 whenever there are more than 10000.", function() {\n      var numSheep = 4,\n          monthsToPrint = 12,\n          logNumber = 0,\n          logCall = \'\',\n          message = \'\';\n\n      for(var monthNumber = 1; monthNumber <= monthsToPrint; monthNumber++) {\n        if(numSheep > 10000) {\n          numSheep = numSheep/2;\n          logCall = console.log.getCall(logNumber++);\n          message = "Removing " + numSheep + " sheep from the population. Phew!";\n          assert(logCall.args[0] == message);\n        }\n        numSheep*=4;\n        logCall = console.log.getCall(logNumber++);\n        message = "There will be " + numSheep + " sheep after " + monthNumber + " month(s)!"\n        assert(logCall.args[0] == message);\n      }\n    });\n  });\n});';
 });
 require.register("boot/answer.js", function(exports, require, module){
 module.exports = 'var numSheep = 4;\nvar monthsToPrint = 12;\n\nfor(var monthNumber = 1; monthNumber <= monthsToPrint; monthNumber++) {\n\n  if(numSheep > 10000) {\n    numSheep = numSheep/2;\n    console.log("Removing " + numSheep + " sheep from the population. Phew!");\n  }\n  numSheep*=4;\n  console.log("There will be " + numSheep + " sheep after " + monthNumber + " month(s)!");\n}';
@@ -27800,6 +27808,8 @@ module.exports = 'var numSheep = 4;\nvar monthsToPrint = 12;\n\nfor(var monthNum
 require.register("boot/iframe_template.js", function(exports, require, module){
 module.exports = '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Abecedary Tests</title>\n  </head>\n  <body>\n    <script src="/dist/sandbox-dependencies.js"></script>\n  </body>\n</html>';
 });
+
+
 
 
 
@@ -27928,6 +27938,8 @@ require.alias("brighthas-bootstrap/dist/js/bootstrap.js", "boot/deps/bootstrap/i
 require.alias("component-jquery/index.js", "brighthas-bootstrap/deps/jquery/index.js");
 
 require.alias("brighthas-bootstrap/dist/js/bootstrap.js", "brighthas-bootstrap/index.js");
+require.alias("segmentio-extend/index.js", "boot/deps/extend/index.js");
+
 require.alias("abecedary/lib/index.js", "boot/deps/abecedary/lib/index.js");
 require.alias("abecedary/lib/index.js", "boot/deps/abecedary/index.js");
 require.alias("visionmedia-mocha/mocha.js", "abecedary/deps/mocha/mocha.js");

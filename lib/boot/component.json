@@ -8,7 +8,8 @@
     "benatkin/codemirror-mode-javascript": "*",
     "component/debounce": "*",
     "component/dom": "*",
-    "brighthas/bootstrap" : "*"
+    "brighthas/bootstrap" : "*",
+    "segmentio/extend": "*"
   },
   "local": ["abecedary"],
   "license": "AAL",
