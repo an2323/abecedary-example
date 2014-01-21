@@ -7,7 +7,8 @@
     "amasad/codemirror": "*",
     "benatkin/codemirror-mode-javascript": "*",
     "component/debounce": "*",
-    "component/dom": "*"
+    "component/dom": "*",
+    "brighthas/bootstrap" : "*"
   },
   "local": ["abecedary"],
   "license": "AAL",
@@ -16,6 +17,7 @@
     "index.js",
     "code.js",
     "tests.js",
+    "answer.js",
     "iframe_template.js"
   ],
   "styles": [

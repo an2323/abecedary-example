@@ -2,23 +2,50 @@
 <html>
   <head>
     <title>Abecedary Demo</title>
-    <link rel="stylesheet" href="build/build.css" />
+    <link rel='stylesheet' href='build/build.css' />
   </head>
   <body>
-    <div class='half'>
-      <h2>Editor</h2>
-      <div class="editor"></div>
+    <div class='row'>
+      <div class='col-sm-4' id='content'>
+        <h3>Problem Solving with Conditionals</h3>
+        <p>Scientists could see that the Death Valley Sheep Situation would quickly get out of control. 67,000,000 bighorn sheep are reported to be hard to handle. The scientists have decided that, for any month the population is above 10,000, half of the sheep will be sent to other regions that have endangered populations. The rate at which the staying population grows, however, will stay the same (x4).</p>
+
+        <p>In our existing for loop in deathValley.js, insert a conditional that:</p>
+        <ol>
+          <li>Halves the sheep population</li>
+          <li>prints a notice to the console if the population rises above 10,000</li>
+        </ol>
+
+        <p>The notice should take the following format:</p>
+
+        <pre>Removing &lt;number&gt; sheep from the population. Phew!</pre>
+
+        <ul class='tasks'></ul>
+        <p class='stats'></p>
+      </div>
+
+      <div class='col-sm-8' id='editors'>
+        <ul class='nav nav-tabs'>
+          <li class="active"><a href='#code' data-loc='code'>app.js</a></li>
+          <li><a href='#tests' data-loc='tests'>Tests</a></li>
+          <li><a href='#answer' data-loc='answer'>Answer</a></li>
+        </ul>
+
+        <div class='tab-content'>
+          <div class='tab-pane active' id='code'>
+            <div class='editor'></div>
+          </div>
+          <div class='tab-pane' id='tests'>
+            <div class='tests'></div>
+          </div>
+          <div class='tab-pane' id='answer'>
+            <div class='answer'></div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class='half'>
-      <h2>Tests</h2>
-      <div class="tests"></div>
-    </div>
-    <div class='console'>
-      <h2>Console</h2>
-      <p></p>
-      <ul></ul>
-    </div>
-    <script src="build/build.js"></script>
+    
+    <script src='build/build.js'></script>
     <script>require('boot')</script>
   </body>
 </html>
