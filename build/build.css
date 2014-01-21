@@ -7462,6 +7462,10 @@ body {
 
 
 
+html, body, .row, #editors, .tab-content {
+  height: 100%;
+}
+
 body {
   background-color: #2b2b2b;
   color: #eee;
@@ -7475,12 +7479,17 @@ body {
   background-color: #2b2b2b !important;
   color: #eee !important;
 }
+.nav-tabs .first {
+  padding-left: 43px;
+}
 .nav-tabs a:hover {
   background-color: #2b2b2b !important;
 }
 
 .tab-content {
   border-left: 1px solid #eee;
+  margin-bottom: -40px;
+  min-height: 100%;
 }
 
 #content {
