@@ -1,6 +1,6 @@
-SRC = $(wildcard lib/*/*.js)
-CSS = $(wildcard lib/*/*.css)
-HTML = $(wildcard lib/*/*.html)
+SRC = $(wildcard lib/**/*.js)
+CSS = $(wildcard lib/**/*.css)
+HTML = $(wildcard lib/**/*.html)
 COMPONENTJSON = $(wildcard lib/*/component.json)
 TEMPLATES = $(HTML:.html=.js)
 

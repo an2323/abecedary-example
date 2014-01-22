@@ -1,0 +1,16 @@
+{
+  "name": "sandbox-javascript",
+  "repo": "codeschool/sandbox-javascript",
+  "description": "Safely Evaluate JavaScript code without side effects.",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {
+    
+  },
+  "development": {},
+  "license": "MIT",
+  "main": "lib/index.js",
+  "scripts": [
+    "lib/index.js"
+  ]
+}

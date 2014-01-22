@@ -31717,6 +31717,7 @@ function AbecedaryReporter(runner) {
   });
 
   runner.on('fail', function(test){
+  	console.log(test);
     failures.push(test);
   });
 

@@ -27682,6 +27682,8 @@ Abecedary.prototype.run = function(code, tests) {
     _this.context = context;
 
     var runner = [
+      // 'savedEval = eval',
+      // 'eval = function() { throw "eval() is disabled"; };',
       'window.code = unescape("' + escape(code) + '");',
       'mocha.suite.suites.shift()',
       tests || _this.tests,
@@ -27701,7 +27703,7 @@ Abecedary.prototype.close = function(data) {
 // Private
 //   Creates the stuff.js sandbox and returns a promise
 Abecedary.prototype.createSandbox = function() {
-  //if(this.sandbox) { return this.sandbox; }
+  if(this.sandbox) { return this.sandbox; }
 
   var _this = this;
   this.sandbox = new Promise(function (resolve, reject) {
@@ -27726,6 +27728,27 @@ Abecedary.prototype.runComplete = function(report) {
 }
 
 module.exports = Abecedary;
+
+// html = new HTMLBuilder()
+
+// abecedary = new Abecedary();
+// abecedary.includes = [
+//   {
+//       code: $('div.user-html').last().text()
+//       type: html
+//   },
+//   {
+//       code: 'ember.js'
+//       type: 'script'
+//   },
+//   {
+//       code: // tests
+//       type: 'javascript'
+//   }
+// ]
+// abecedary.on('finished', function() {
+//   // Show message
+// })
 });
 require.register("boot/index.js", function(exports, require, module){
 var dom = require('dom');
@@ -27736,15 +27759,15 @@ var extend = require('extend');
 var iframeTemplate = require('./iframe_template'); 
 require('codemirror-mode-javascript')(CodeMirror);
 
-var code = require('./code');
-var tests = require('./tests');
-var answer = require('./answer');
+var example = 'javascript';
+var code = require('./'+example+'/code');
+var tests = require('./'+example+'/tests');
+var answer = require('./'+example+'/answer');
 
 
 var options = {
   indentUnit: 2,
   tabSize: 2,
-  mode: 'javascript',
   theme: 'vibrant-ink',
   lineNumbers: true,
   lineWrapping: true,
@@ -27796,17 +27819,26 @@ dom('.nav-tabs a').on('click', function (e) {
 setTimeout(runWrapper, 1);
 
 });
-require.register("boot/code.js", function(exports, require, module){
-module.exports = 'var numSheep = 4;\nvar monthsToPrint = 12;\n\nfor(var monthNumber = 1; monthNumber <= monthsToPrint; monthNumber++) {\n  \n  // Increment sheep and log here\n\n  numSheep*=4;\n  console.log("There will be " + numSheep + " sheep after " + monthNumber + " month(s)!");\n}';
-});
-require.register("boot/tests.js", function(exports, require, module){
-module.exports = 'var assert = require(\'chai\').assert,\n    estraparse = require(\'esprima-jquery-map\'),\n    sinon = require(\'sinon\');\n\ndescribe(\'problem\', function() {\n  before(function(){\n    this.tree = estraparse(code);\n  });\n\n  it("Within your `for` loop, you need to add an `if` statement.", function() {\n    assert(this.tree.find(\'forstatement ifstatement\').length > 0);  \n  });\n  it("Within the `if` statement, you\'ll need to halve the number of sheep and log the message \'Removing <number> sheep from the population. Phew!\' to the console.", function() {\n    var logInFor = this.tree.find("forstatement ifstatement identifier[name=\'console\']+identifier[name=\'log\']").length > 0;\n    assert(logInFor);\n  });\n\n  describe(\'with logging\', function() {\n    before(function() {\n      sinon.spy(console, "log");\n      eval(window.code);\n    });\n    after(function() {\n      console.log.restore();\n    });\n    it("You are calling `console.log` too few times. This probably means the condition on your `if` statement is incorrect. Make sure it tests that `numSheep` is greater than 10000.", function() {\n      if(console.log.callCount < 18) { assert(false); }\n    });\n    it("You are calling `console.log` too many times. This probably means the condition on your `if` statement is incorrect. Make sure it tests that `numSheep` is greater than 10000.", function() {\n      if(console.log.callCount > 18) { assert(false); }\n    });\n    it("You\'re calling `console.log` the correct number of times, but not logging the correct messages. Are you diving the `numSheep` by 2 whenever there are more than 10000.", function() {\n      var numSheep = 4,\n          monthsToPrint = 12,\n          logNumber = 0,\n          logCall = \'\',\n          message = \'\';\n\n      for(var monthNumber = 1; monthNumber <= monthsToPrint; monthNumber++) {\n        if(numSheep > 10000) {\n          numSheep = numSheep/2;\n          logCall = console.log.getCall(logNumber++);\n          message = "Removing " + numSheep + " sheep from the population. Phew!";\n          assert(logCall.args[0] == message);\n        }\n        numSheep*=4;\n        logCall = console.log.getCall(logNumber++);\n        message = "There will be " + numSheep + " sheep after " + monthNumber + " month(s)!"\n        assert(logCall.args[0] == message);\n      }\n    });\n  });\n});';
-});
-require.register("boot/answer.js", function(exports, require, module){
-module.exports = 'var numSheep = 4;\nvar monthsToPrint = 12;\n\nfor(var monthNumber = 1; monthNumber <= monthsToPrint; monthNumber++) {\n\n  if(numSheep > 10000) {\n    numSheep = numSheep/2;\n    console.log("Removing " + numSheep + " sheep from the population. Phew!");\n  }\n  numSheep*=4;\n  console.log("There will be " + numSheep + " sheep after " + monthNumber + " month(s)!");\n}';
-});
 require.register("boot/iframe_template.js", function(exports, require, module){
 module.exports = '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Abecedary Tests</title>\n  </head>\n  <body>\n    <script src="/dist/sandbox-dependencies.js"></script>\n  </body>\n</html>';
+});
+require.register("boot/javascript/code.js", function(exports, require, module){
+module.exports = 'var numSheep = 4;\nvar monthsToPrint = 12;\n\nfor(var monthNumber = 1; monthNumber <= monthsToPrint; monthNumber++) {\n  \n  // Increment sheep and log here\n\n  numSheep*=4;\n  console.log("There will be " + numSheep + " sheep after " + monthNumber + " month(s)!");\n}';
+});
+require.register("boot/javascript/tests.js", function(exports, require, module){
+module.exports = 'var assert = require(\'chai\').assert,\n    estraparse = require(\'esprima-jquery-map\'),\n    sinon = require(\'sinon\');\n\ndescribe(\'problem\', function() {\n  before(function(){\n    this.tree = estraparse(code);\n  });\n\n  it("Within your `for` loop, you need to add an `if` statement.", function() {\n    assert(this.tree.find(\'forstatement ifstatement\').length > 0);  \n  });\n  it("Within the `if` statement, you\'ll need to halve the number of sheep and log the message \'Removing <number> sheep from the population. Phew!\' to the console.", function() {\n    var logInFor = this.tree.find("forstatement ifstatement identifier[name=\'console\']+identifier[name=\'log\']").length > 0;\n    assert(logInFor);\n  });\n\n  describe(\'with logging\', function() {\n    before(function() {\n      // var sandbox = new Sandbox({quiet: true, variables: {\n      //   sinon: sinon\n      // }});\n      // sandbox.evaluate(\'sinon.spy(console, "log");\');\n      // sandbox.evaluate(window.code);\n      // consoleLog = sandbox.evaluate(\'console.log\');\n\n      sinon.spy(console, \'log\');\n      eval(code);\n      consoleLog = console.log\n    });\n    after(function() {\n      //sandbox.destroy();\n      console.log.restore();\n    });\n    it("You are calling `console.log` too few times. This probably means the condition on your `if` statement is incorrect. Make sure it tests that `numSheep` is greater than 10000.", function() {\n      if(consoleLog.callCount < 18) { assert(false); }\n    });\n    it("You are calling `console.log` too many times. This probably means the condition on your `if` statement is incorrect. Make sure it tests that `numSheep` is greater than 10000.", function() {\n      if(consoleLog.callCount > 18) { assert(false); }\n    });\n    it("You\'re calling `console.log` the correct number of times, but not logging the correct messages. Are you diving the `numSheep` by 2 whenever there are more than 10000.", function() {\n      var numSheep = 4,\n          monthsToPrint = 12,\n          logNumber = 0,\n          logCall = \'\',\n          message = \'\';\n\n      for(var monthNumber = 1; monthNumber <= monthsToPrint; monthNumber++) {\n        if(numSheep > 10000) {\n          numSheep = numSheep/2;\n          logCall = consoleLog.getCall(logNumber++);\n          message = "Removing " + numSheep + " sheep from the population. Phew!";\n          assert(logCall.args[0] == message);\n        }\n        numSheep*=4;\n        logCall = consoleLog.getCall(logNumber++);\n        message = "There will be " + numSheep + " sheep after " + monthNumber + " month(s)!"\n        assert(logCall.args[0] == message);\n      }\n    });\n  });\n});';
+});
+require.register("boot/javascript/answer.js", function(exports, require, module){
+module.exports = 'var numSheep = 4;\nvar monthsToPrint = 12;\n\nfor(var monthNumber = 1; monthNumber <= monthsToPrint; monthNumber++) {\n\n  if(numSheep > 10000) {\n    numSheep = numSheep/2;\n    console.log("Removing " + numSheep + " sheep from the population. Phew!");\n  }\n  numSheep*=4;\n  console.log("There will be " + numSheep + " sheep after " + monthNumber + " month(s)!");\n}';
+});
+require.register("boot/html_with_javascript/code.js", function(exports, require, module){
+module.exports = '<script src="http://www.google.com/jsapi"></script>\n<script type="text/javascript">\n\n</script>';
+});
+require.register("boot/html_with_javascript/tests.js", function(exports, require, module){
+module.exports = 'var assert = require(\'chai\').assert,\n    $ = require(\'jquery-browserify\'),\n    sinon = require(\'sinon\');\n\ndescribe(\'problem\', function() {\n\n  before(function() {\n    google = {\n      load: function() { }\n    }\n    sinon.spy(google, \'load\');\n    var js = $(code).find(\'script\').last().text();\n    eval(js);\n  });\n\n  it(\'It looks like the Google Loader was not invoked.\', function() {\n    assert(google.load.callCount > 0);\n  });\n\n  it(\'The API and version were not passed in to `google.load()`.\', function() {\n\n  });\n  it(\'The correct API and version were not passed in to `google.load()`.\', function() {\n\n  });\n  it(\'The correct API was not passed in to `google.load()`.\', function() {\n\n  });\n  it(\'The correct version was not passed in to `google.load()`.\', function() {\n\n  });\n})\n';
+});
+require.register("boot/html_with_javascript/answer.js", function(exports, require, module){
+module.exports = '<script src="http://www.google.com/jsapi"></script>\n<script type="text/javascript">\n  google.load(\'picker\', \'1\');\n</script>';
 });
 
 
@@ -27855,10 +27887,13 @@ module.exports = '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Abecedary Tests<
 
 
 require.alias("boot/index.js", "demo/deps/boot/index.js");
-require.alias("boot/code.js", "demo/deps/boot/code.js");
-require.alias("boot/tests.js", "demo/deps/boot/tests.js");
-require.alias("boot/answer.js", "demo/deps/boot/answer.js");
 require.alias("boot/iframe_template.js", "demo/deps/boot/iframe_template.js");
+require.alias("boot/javascript/code.js", "demo/deps/boot/javascript/code.js");
+require.alias("boot/javascript/tests.js", "demo/deps/boot/javascript/tests.js");
+require.alias("boot/javascript/answer.js", "demo/deps/boot/javascript/answer.js");
+require.alias("boot/html_with_javascript/code.js", "demo/deps/boot/html_with_javascript/code.js");
+require.alias("boot/html_with_javascript/tests.js", "demo/deps/boot/html_with_javascript/tests.js");
+require.alias("boot/html_with_javascript/answer.js", "demo/deps/boot/html_with_javascript/answer.js");
 require.alias("boot/index.js", "demo/deps/boot/index.js");
 require.alias("boot/index.js", "boot/index.js");
 require.alias("amasad-codemirror/codemirror.js", "boot/deps/codemirror/codemirror.js");

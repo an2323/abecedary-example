@@ -17,17 +17,26 @@ describe('problem', function() {
 
   describe('with logging', function() {
     before(function() {
-      sinon.spy(console, "log");
-      eval(window.code);
+      // var sandbox = new Sandbox({quiet: true, variables: {
+      //   sinon: sinon
+      // }});
+      // sandbox.evaluate('sinon.spy(console, "log");');
+      // sandbox.evaluate(window.code);
+      // consoleLog = sandbox.evaluate('console.log');
+
+      sinon.spy(console, 'log');
+      eval(code);
+      consoleLog = console.log
     });
     after(function() {
+      //sandbox.destroy();
       console.log.restore();
     });
     it("You are calling `console.log` too few times. This probably means the condition on your `if` statement is incorrect. Make sure it tests that `numSheep` is greater than 10000.", function() {
-      if(console.log.callCount < 18) { assert(false); }
+      if(consoleLog.callCount < 18) { assert(false); }
     });
     it("You are calling `console.log` too many times. This probably means the condition on your `if` statement is incorrect. Make sure it tests that `numSheep` is greater than 10000.", function() {
-      if(console.log.callCount > 18) { assert(false); }
+      if(consoleLog.callCount > 18) { assert(false); }
     });
     it("You're calling `console.log` the correct number of times, but not logging the correct messages. Are you diving the `numSheep` by 2 whenever there are more than 10000.", function() {
       var numSheep = 4,
@@ -39,12 +48,12 @@ describe('problem', function() {
       for(var monthNumber = 1; monthNumber <= monthsToPrint; monthNumber++) {
         if(numSheep > 10000) {
           numSheep = numSheep/2;
-          logCall = console.log.getCall(logNumber++);
+          logCall = consoleLog.getCall(logNumber++);
           message = "Removing " + numSheep + " sheep from the population. Phew!";
           assert(logCall.args[0] == message);
         }
         numSheep*=4;
-        logCall = console.log.getCall(logNumber++);
+        logCall = consoleLog.getCall(logNumber++);
         message = "There will be " + numSheep + " sheep after " + monthNumber + " month(s)!"
         assert(logCall.args[0] == message);
       }

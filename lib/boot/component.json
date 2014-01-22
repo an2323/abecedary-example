@@ -11,15 +11,22 @@
     "brighthas/bootstrap" : "*",
     "segmentio/extend": "*"
   },
-  "local": ["abecedary"],
+  "local": [
+    "abecedary"
+  ],
   "license": "AAL",
   "main": "index.js",
   "scripts": [
     "index.js",
-    "code.js",
-    "tests.js",
-    "answer.js",
-    "iframe_template.js"
+    "iframe_template.js",
+
+
+    "javascript/code.js",
+    "javascript/tests.js",
+    "javascript/answer.js",
+    "html_with_javascript/code.js",
+    "html_with_javascript/tests.js",
+    "html_with_javascript/answer.js"
   ],
   "styles": [
     "index.css"

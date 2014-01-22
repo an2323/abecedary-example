@@ -1,0 +1,32 @@
+var assert = require('chai').assert,
+    $ = require('jquery-browserify'),
+    sinon = require('sinon');
+
+describe('problem', function() {
+
+  before(function() {
+    google = {
+      load: function() { }
+    }
+    sinon.spy(google, 'load');
+    var js = $(code).find('script').last().text();
+    eval(js);
+  });
+
+  it('It looks like the Google Loader was not invoked.', function() {
+    assert(google.load.callCount > 0);
+  });
+
+  it('The API and version were not passed in to `google.load()`.', function() {
+
+  });
+  it('The correct API and version were not passed in to `google.load()`.', function() {
+
+  });
+  it('The correct API was not passed in to `google.load()`.', function() {
+
+  });
+  it('The correct version was not passed in to `google.load()`.', function() {
+
+  });
+})
