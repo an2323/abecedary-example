@@ -10,6 +10,7 @@
     "sinon": "https://github.com/cjohansen/Sinon.JS/tarball/browserify",
     "chai": "~1.8.1",
     "jquery-browserify": "1.8.1",
+    "sandbox-javascript": "0.0.0",
     "esprima-jquery-map": "git://github.com/codeschool/esprima-jquery-map.git#6c182cf026b8c99745df813680f488460191c3ad"
   },
   "devDependencies": {
