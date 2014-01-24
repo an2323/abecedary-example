@@ -1,0 +1,17 @@
+{
+  "name": "css",
+  "description": "Demo using CSS.",
+  "author": "Code School",
+  "license": "AAL",
+  "dependencies": {
+    "abecedary": "https://github.com/codeschool/abecedary/tarball/master",
+    "mocha": "~1.17.0",
+    "chai": "~1.8.1",
+    "cssom": "~0.3.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-shell": "~0.6.4",
+    "grunt-contrib-concat": "~0.3.0"
+  }
+}

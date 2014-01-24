@@ -9,24 +9,18 @@
     "component/debounce": "*",
     "component/dom": "*",
     "brighthas/bootstrap" : "*",
-    "segmentio/extend": "*"
+    "segmentio/extend": "*",
+    "codeschool/abecedary": "*"
   },
-  "local": [
-    "abecedary"
-  ],
   "license": "AAL",
   "main": "index.js",
+  "local": [
+    "html_with_javascript",
+    "javascript",
+    "css"
+  ],
   "scripts": [
-    "index.js",
-    "iframe_template.js",
-
-
-    "javascript/code.js",
-    "javascript/tests.js",
-    "javascript/answer.js",
-    "html_with_javascript/code.js",
-    "html_with_javascript/tests.js",
-    "html_with_javascript/answer.js"
+    "index.js"
   ],
   "styles": [
     "index.css"

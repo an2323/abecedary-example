@@ -1,0 +1,17 @@
+var assert = require('chai').assert,
+    cssom = require('cssom');
+
+describe('problem', function() {
+  it('Since this is on the `body` tag, start with a CSS rule targetting body.', function() {
+    var tree = cssom.parse(code);
+    assert(tree.cssRules[0].selectorText == 'body');
+  });
+
+  it('Set the `background-color` property for the `body`.', function() {
+
+  });
+
+  it('The `background-color` for the `body` should be `red`.', function() {
+
+  });
+});

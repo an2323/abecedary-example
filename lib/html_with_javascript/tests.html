@@ -1,0 +1,34 @@
+var assert = require('chai').assert,
+    $ = require('jquery-browserify'),
+    sinon = require('sinon'),
+    sandbox = require('javascript-sandbox');
+
+describe('add', function() {
+
+  it('Create a script tag to put your javascript.', function() {
+    assert($(code).filter('script').length > 0);
+  });
+
+  describe('with JavaScript', function() {
+    before(function() {
+      var jsCode = $(code).filter('script').last().text()
+      var sandbox = new Sandbox(jsCode);
+    });
+    it('Be sure to define a function named `add`.', function() {
+      assert(sandbox.run(function() {
+        return typeof(add) === 'function';
+      });
+    });
+    it('Your `add` function should take in two arguments.', function() {
+      assert(sandbox.run(function() {
+        return add.length == 2;
+      });
+    });
+    it('`add` should return the result of adding the two arguments.', function() {
+      assert(sandbox.run(function() {
+        return (add(4, 8) == 12) && (add(1, 2) == 3)
+      });
+    });
+  });
+})
+
