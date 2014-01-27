@@ -17,7 +17,8 @@
   "local": [
     "html_with_javascript",
     "javascript",
-    "css"
+    "css",
+    "drive"
   ],
   "scripts": [
     "index.js"

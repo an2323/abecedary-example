@@ -22056,6 +22056,37 @@ module.exports = 'body {\n  background-color: red;\n}';
 require.register("css/iframe.js", function(exports, require, module){
 module.exports = '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Abecedary Tests</title>\n  </head>\n  <body>\n    <script src="/build/demos/css.js"></script>\n  </body>\n</html>';
 });
+require.register("drive/index.js", function(exports, require, module){
+var iframeTemplate = require('./iframe'); 
+var code = require('./code');
+var tests = require('./tests');
+var answer = require('./answer');
+
+module.exports = {
+  iframe: iframeTemplate,
+  code: code,
+  tests: tests,
+  answer: answer,
+  syntax: 'html',
+  name: "Sample Drive Question",
+  question: "This is a sample question using an external library, Google Drive.",
+  options: {
+    bail: true
+  }
+}
+});
+require.register("drive/code.js", function(exports, require, module){
+module.exports = '';
+});
+require.register("drive/tests.js", function(exports, require, module){
+module.exports = 'var assert = require(\'chai\').assert,\n    $ = require(\'jquery-browserify\'),\n    sinon = require(\'sinon\');\n\ndescribe(\'challenge name\', function() {\n\n  it(\'Implement here\', function() {\n    \n  });\n})\n\n';
+});
+require.register("drive/answer.js", function(exports, require, module){
+module.exports = '<script>\n  function add(one, two) {\n    return one + two;\n  }\n</script>';
+});
+require.register("drive/iframe.js", function(exports, require, module){
+module.exports = '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Abecedary Tests</title>\n  </head>\n  <body>\n    <script src="/build/demos/drive.js"></script>\n  </body>\n</html>';
+});
 require.register("boot/index.js", function(exports, require, module){
 var dom = require('dom');
 var debounce = require('debounce');
@@ -22143,12 +22174,14 @@ function setup(subexample) {
   runWrapper();
 }
 
-setup('javascript');
+setup('drive');
 
 dom('#examples a').on('click', function() {
   setup(dom(this).attr('data-example'));
 });
 });
+
+
 
 
 
@@ -22336,4 +22369,11 @@ require.alias("css/answer.js", "boot/deps/css/answer.js");
 require.alias("css/iframe.js", "boot/deps/css/iframe.js");
 require.alias("css/index.js", "boot/deps/css/index.js");
 require.alias("css/index.js", "css/index.js");
+require.alias("drive/index.js", "boot/deps/drive/index.js");
+require.alias("drive/code.js", "boot/deps/drive/code.js");
+require.alias("drive/tests.js", "boot/deps/drive/tests.js");
+require.alias("drive/answer.js", "boot/deps/drive/answer.js");
+require.alias("drive/iframe.js", "boot/deps/drive/iframe.js");
+require.alias("drive/index.js", "boot/deps/drive/index.js");
+require.alias("drive/index.js", "drive/index.js");
 require.alias("boot/index.js", "boot/index.js");

@@ -1,0 +1,15 @@
+{
+  "name": "drive",
+  "description": "Demo using Google Drive",
+  "keywords": [],
+  "dependencies": { },
+  "license": "AAL",
+  "main": "index.js",
+  "scripts": [
+    "index.js",
+    "code.js",
+    "tests.js",
+    "answer.js",
+    "iframe.js"
+  ]
+}
