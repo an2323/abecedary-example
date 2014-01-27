@@ -1,3 +1,4 @@
+build/sandbox_vendor.js
 components
 lib/*/build
 lib/*/components
