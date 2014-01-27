@@ -8168,6 +8168,7 @@ function type(el) {
 
 });
 require.register("component-query/index.js", function(exports, require, module){
+
 function one(selector, el) {
   return el.querySelector(selector);
 }
@@ -8187,7 +8188,6 @@ exports.engine = function(obj){
   if (!obj.all) throw new Error('.all callback required');
   one = obj.one;
   exports.all = obj.all;
-  return exports;
 };
 
 });
@@ -8332,104 +8332,7 @@ module.exports = isArray || function (val) {
 };
 
 });
-require.register("component-props/index.js", function(exports, require, module){
-/**
- * Global Names
- */
-
-var globals = /\b(Array|Date|Object|Math|JSON)\b/g;
-
-/**
- * Return immediate identifiers parsed from `str`.
- *
- * @param {String} str
- * @param {String|Function} map function or prefix
- * @return {Array}
- * @api public
- */
-
-module.exports = function(str, fn){
-  var p = unique(props(str));
-  if (fn && 'string' == typeof fn) fn = prefixed(fn);
-  if (fn) return map(str, p, fn);
-  return p;
-};
-
-/**
- * Return immediate identifiers in `str`.
- *
- * @param {String} str
- * @return {Array}
- * @api private
- */
-
-function props(str) {
-  return str
-    .replace(/\.\w+|\w+ *\(|"[^"]*"|'[^']*'|\/([^/]+)\//g, '')
-    .replace(globals, '')
-    .match(/[a-zA-Z_]\w*/g)
-    || [];
-}
-
-/**
- * Return `str` with `props` mapped with `fn`.
- *
- * @param {String} str
- * @param {Array} props
- * @param {Function} fn
- * @return {String}
- * @api private
- */
-
-function map(str, props, fn) {
-  var re = /\.\w+|\w+ *\(|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g;
-  return str.replace(re, function(_){
-    if ('(' == _[_.length - 1]) return fn(_);
-    if (!~props.indexOf(_)) return _;
-    return fn(_);
-  });
-}
-
-/**
- * Return unique array.
- *
- * @param {Array} arr
- * @return {Array}
- * @api private
- */
-
-function unique(arr) {
-  var ret = [];
-
-  for (var i = 0; i < arr.length; i++) {
-    if (~ret.indexOf(arr[i])) continue;
-    ret.push(arr[i]);
-  }
-
-  return ret;
-}
-
-/**
- * Map with prefix `str`.
- */
-
-function prefixed(str) {
-  return function(_){
-    return str + _;
-  };
-}
-
-});
 require.register("component-to-function/index.js", function(exports, require, module){
-/**
- * Module Dependencies
- */
-
-try {
-  var expr = require('props');
-} catch(e) {
-  var expr = require('props-component');
-}
 
 /**
  * Expose `toFunction()`.
@@ -8500,8 +8403,8 @@ function stringToFunction(str) {
   // immediate such as "> 20"
   if (/^ *\W+/.test(str)) return new Function('_', 'return _ ' + str);
 
-  // properties such as "name.first" or "age > 18" or "age > 18 && age < 36"
-  return new Function('_', 'return ' + get(str));
+  // properties such as "name.first" or "age > 18"
+  return new Function('_', 'return _.' + str);
 }
 
 /**
@@ -8527,28 +8430,6 @@ function objectToFunction(obj) {
     }
     return true;
   }
-}
-
-/**
- * Built the getter function. Supports getter style functions
- *
- * @param {String} str
- * @return {String}
- * @api private
- */
-
-function get(str) {
-  var props = expr(str);
-  if (!props.length) return '_.' + str;
-
-  var val;
-  for(var i = 0, prop; prop = props[i]; i++) {
-    val = '_.' + prop;
-    val = "('function' == typeof " + val + " ? " + val + "() : " + val + ")";
-    str = str.replace(new RegExp(prop, 'g'), val);
-  }
-
-  return str;
 }
 
 });
@@ -22098,8 +21979,9 @@ module.exports = {
   syntax: 'html',
   name: "Mixed Mode Question",
   question: "Create a script tag, and in it create a function named `add` which takes in two numbers and returns the result.",
-  options:
+  options: {
     bail: true
+  }
 }
 });
 require.register("html_with_javascript/code.js", function(exports, require, module){
@@ -22128,8 +22010,9 @@ module.exports = {
   answer: answer,
   syntax: 'javascript',
   question: "Write an add function that adds two numbers and returns the result.",
-  options:
+  options: {
     bail: true
+  }
 }
 });
 require.register("javascript/code.js", function(exports, require, module){
@@ -22157,7 +22040,7 @@ module.exports = {
   answer: answer,
   syntax: 'css',
   name: "Sample CSS Question",
-  question: "Set the background color to red on the body."
+  question: "Set the background color to red on the body.",
   options: {}
 }
 });
@@ -22341,9 +22224,7 @@ require.alias("component-dom/lib/attributes.js", "boot/deps/dom/lib/attributes.j
 require.alias("component-dom/lib/events.js", "boot/deps/dom/lib/events.js");
 require.alias("component-each/index.js", "component-dom/deps/each/index.js");
 require.alias("component-to-function/index.js", "component-each/deps/to-function/index.js");
-require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
-require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
-require.alias("component-props/index.js", "component-props/index.js");
+
 require.alias("component-type/index.js", "component-each/deps/type/index.js");
 
 require.alias("component-event/index.js", "component-dom/deps/event/index.js");
@@ -22372,9 +22253,7 @@ require.alias("component-css/lib/computed.js", "component-dom/deps/css/lib/compu
 require.alias("component-css/index.js", "component-dom/deps/css/index.js");
 require.alias("component-each/index.js", "component-css/deps/each/index.js");
 require.alias("component-to-function/index.js", "component-each/deps/to-function/index.js");
-require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
-require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
-require.alias("component-props/index.js", "component-props/index.js");
+
 require.alias("component-type/index.js", "component-each/deps/type/index.js");
 
 require.alias("visionmedia-debug/index.js", "component-css/deps/debug/index.js");
@@ -22408,9 +22287,7 @@ require.alias("component-trim/index.js", "component-dom/deps/trim/index.js");
 require.alias("yields-isArray/index.js", "component-dom/deps/isArray/index.js");
 
 require.alias("component-to-function/index.js", "component-dom/deps/to-function/index.js");
-require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
-require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
-require.alias("component-props/index.js", "component-props/index.js");
+
 require.alias("matthewp-keys/index.js", "component-dom/deps/keys/index.js");
 require.alias("matthewp-keys/index.js", "component-dom/deps/keys/index.js");
 require.alias("matthewp-keys/index.js", "matthewp-keys/index.js");
@@ -22432,6 +22309,8 @@ require.alias("then-promise/core.js", "codeschool-abecedary/deps/promise/core.js
 require.alias("johntron-asap/asap.js", "then-promise/deps/asap/asap.js");
 require.alias("johntron-asap/asap.js", "then-promise/deps/asap/index.js");
 require.alias("johntron-asap/asap.js", "johntron-asap/index.js");
+require.alias("segmentio-extend/index.js", "codeschool-abecedary/deps/extend/index.js");
+
 require.alias("adamfortuna-stuff.js/lib/stuff.js", "codeschool-abecedary/deps/stuff.js/lib/stuff.js");
 require.alias("adamfortuna-stuff.js/lib/stuff.js", "codeschool-abecedary/deps/stuff.js/index.js");
 require.alias("adamfortuna-stuff.js/lib/stuff.js", "adamfortuna-stuff.js/index.js");

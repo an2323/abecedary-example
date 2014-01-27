@@ -9335,12 +9335,7 @@ return jQuery;
 })( window ); }));
 
 })(window)
-},{}],"chai":[function(require,module,exports){
-module.exports=require('8YJMH2');
-},{}],"8YJMH2":[function(require,module,exports){
-module.exports = require('./lib/chai');
-
-},{"./lib/chai":1}],"sinon":[function(require,module,exports){
+},{}],"sinon":[function(require,module,exports){
 module.exports=require('cmkQNR');
 },{}],"cmkQNR":[function(require,module,exports){
 (function(){/*jslint */
@@ -9411,7 +9406,12 @@ sinon.restore = function (object) {
 module.exports = sinon;
 
 })()
-},{"./sinon/sinon":2,"./sinon/spy":3,"./sinon/call":4,"./sinon/expectation":5,"./sinon/stub":6,"./sinon/assert":7,"./sinon/match":8,"./sinon/collection":9,"./sinon/mock":10,"./sinon/sandbox":11,"./sinon/test":12,"./sinon/util/fake_timers":13,"./sinon/util/fake_xml_http_request":14,"./sinon/test_case":15,"./sinon/util/fake_server_with_clock":16,"./sinon/util/fake_server":17}],2:[function(require,module,exports){
+},{"./sinon/sinon":1,"./sinon/spy":2,"./sinon/call":3,"./sinon/expectation":4,"./sinon/stub":5,"./sinon/mock":6,"./sinon/assert":7,"./sinon/match":8,"./sinon/util/fake_timers":9,"./sinon/collection":10,"./sinon/sandbox":11,"./sinon/test":12,"./sinon/test_case":13,"./sinon/util/fake_xml_http_request":14,"./sinon/util/fake_server":15,"./sinon/util/fake_server_with_clock":16}],"chai":[function(require,module,exports){
+module.exports=require('8YJMH2');
+},{}],"8YJMH2":[function(require,module,exports){
+module.exports = require('./lib/chai');
+
+},{"./lib/chai":17}],1:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false, forin: true, nomen: false, regexp: false, plusplus: false*/
 /*global require, document*/
 /**
@@ -9729,90 +9729,7 @@ exports.format = function (value) {
 
 
 })()
-},{"util":18}],15:[function(require,module,exports){
-(function(){/*jslint eqeqeq: false, onevar: false, eqeqeq: false*/
-/*global module, require*/
-/**
- * Test case, sandboxes all test functions
- *
- * @author Christian Johansen (christian@cjohansen.no)
- * @license BSD
- *
- * Copyright (c) 2010-2013 Christian Johansen
- */
-"use strict";
-
-function createTest(property, setUp, tearDown) {
-    return function () {
-        if (setUp) {
-            setUp.apply(this, arguments);
-        }
-
-        var exception, result;
-
-        try {
-            result = property.apply(this, arguments);
-        } catch (e) {
-            exception = e;
-        }
-
-        if (tearDown) {
-            tearDown.apply(this, arguments);
-        }
-
-        if (exception) {
-            throw exception;
-        }
-
-        return result;
-    };
-}
-
-module.exports = function (globalSinon) {
-
-    function testCase(tests, prefix) {
-        /*jsl:ignore*/
-        if (!tests || typeof tests != "object") {
-            throw new TypeError("sinon.testCase needs an object with test functions");
-        }
-        /*jsl:end*/
-
-        prefix = prefix || "test";
-        var rPrefix = new RegExp("^" + prefix);
-        var methods = {}, testName, property, method;
-        var setUp = tests.setUp;
-        var tearDown = tests.tearDown;
-
-        for (testName in tests) {
-            if (tests.hasOwnProperty(testName)) {
-                property = tests[testName];
-
-                if (/^(setUp|tearDown)$/.test(testName)) {
-                    continue;
-                }
-
-                if (typeof property == "function" && rPrefix.test(testName)) {
-                    method = property;
-
-                    if (setUp || tearDown) {
-                        method = createTest(property, setUp, tearDown);
-                    }
-
-                    methods[testName] = globalSinon.test(method);
-                } else {
-                    methods[testName] = tests[testName];
-                }
-            }
-        }
-
-        return methods;
-    }
-    return testCase;
-
-};
-
-})()
-},{}],13:[function(require,module,exports){
+},{"util":18}],9:[function(require,module,exports){
 (function(global){/*jslint eqeqeq: false, plusplus: false, evil: true, onevar: false, browser: true, forin: false*/
 /*global module, require, window*/
 /**
@@ -10160,7 +10077,90 @@ exports.timers = {
 };
 
 })(window)
-},{}],3:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
+(function(){/*jslint eqeqeq: false, onevar: false, eqeqeq: false*/
+/*global module, require*/
+/**
+ * Test case, sandboxes all test functions
+ *
+ * @author Christian Johansen (christian@cjohansen.no)
+ * @license BSD
+ *
+ * Copyright (c) 2010-2013 Christian Johansen
+ */
+"use strict";
+
+function createTest(property, setUp, tearDown) {
+    return function () {
+        if (setUp) {
+            setUp.apply(this, arguments);
+        }
+
+        var exception, result;
+
+        try {
+            result = property.apply(this, arguments);
+        } catch (e) {
+            exception = e;
+        }
+
+        if (tearDown) {
+            tearDown.apply(this, arguments);
+        }
+
+        if (exception) {
+            throw exception;
+        }
+
+        return result;
+    };
+}
+
+module.exports = function (globalSinon) {
+
+    function testCase(tests, prefix) {
+        /*jsl:ignore*/
+        if (!tests || typeof tests != "object") {
+            throw new TypeError("sinon.testCase needs an object with test functions");
+        }
+        /*jsl:end*/
+
+        prefix = prefix || "test";
+        var rPrefix = new RegExp("^" + prefix);
+        var methods = {}, testName, property, method;
+        var setUp = tests.setUp;
+        var tearDown = tests.tearDown;
+
+        for (testName in tests) {
+            if (tests.hasOwnProperty(testName)) {
+                property = tests[testName];
+
+                if (/^(setUp|tearDown)$/.test(testName)) {
+                    continue;
+                }
+
+                if (typeof property == "function" && rPrefix.test(testName)) {
+                    method = property;
+
+                    if (setUp || tearDown) {
+                        method = createTest(property, setUp, tearDown);
+                    }
+
+                    methods[testName] = globalSinon.test(method);
+                } else {
+                    methods[testName] = tests[testName];
+                }
+            }
+        }
+
+        return methods;
+    }
+    return testCase;
+
+};
+
+})()
+},{}],2:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false, plusplus: false*/
 /*global module, require*/
 /**
@@ -10549,7 +10549,7 @@ spy.spyCall = spyCall;
 module.exports = spy;
 
 })()
-},{"./sinon":2,"./call":4}],4:[function(require,module,exports){
+},{"./sinon":1,"./call":3}],3:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false, plusplus: false*/
 /*global module, require*/
 /**
@@ -10737,7 +10737,7 @@ createSpyCall.toString = callProto.toString; // used by mocks
 module.exports = createSpyCall;
 
 })()
-},{"./sinon":2}],5:[function(require,module,exports){
+},{"./sinon":1}],4:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false, forin: true*/
 /*global module, require*/
 /**
@@ -11034,7 +11034,7 @@ module.exports = function () {
 };
 
 })()
-},{"./sinon":2,"./spy":3,"./stub":6,"./assert":7,"./match":8}],6:[function(require,module,exports){
+},{"./sinon":1,"./spy":2,"./stub":5,"./assert":7,"./match":8}],5:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false*/
 /*global module, require*/
 /**
@@ -11175,7 +11175,159 @@ sinon.extend(stub, (function () {
 module.exports = stub;
 
 })()
-},{"./sinon":2,"./spy":3,"./behavior":19}],7:[function(require,module,exports){
+},{"./sinon":1,"./spy":2,"./behavior":19}],6:[function(require,module,exports){
+(function(){/*jslint eqeqeq: false, onevar: false, nomen: false*/
+/*global module, require*/
+/**
+ * Mock functions.
+ *
+ * @author Christian Johansen (christian@cjohansen.no)
+ * @license BSD
+ *
+ * Copyright (c) 2010-2013 Christian Johansen
+ */
+"use strict";
+
+var sinon = require("./sinon");
+var match = require("./match");
+var spy = require("./spy");
+
+function each(collection, callback) {
+    if (!collection) {
+        return;
+    }
+
+    for (var i = 0, l = collection.length; i < l; i += 1) {
+        callback(collection[i]);
+    }
+}
+
+module.exports = function (expectation) {
+
+    function mock(object) {
+        if (!object) {
+            return expectation.create("Anonymous mock");
+        }
+
+        return mock.create(object);
+    }
+
+    return sinon.extend(mock, {
+
+        create: function create(object) {
+            if (!object) {
+                throw new TypeError("object is null");
+            }
+
+            var mockObject = sinon.extend({}, mock);
+            mockObject.object = object;
+            delete mockObject.create;
+
+            return mockObject;
+        },
+
+        expects: function expects(method) {
+            if (!method) {
+                throw new TypeError("method is falsy");
+            }
+
+            if (!this.expectations) {
+                this.expectations = {};
+                this.proxies = [];
+            }
+
+            if (!this.expectations[method]) {
+                this.expectations[method] = [];
+                var mockObject = this;
+
+                sinon.wrapMethod(this.object, method, function () {
+                    return mockObject.invokeMethod(method, this, arguments);
+                });
+
+                this.proxies.push(method);
+            }
+
+            var exp = expectation.create(method);
+            this.expectations[method].push(exp);
+
+            return exp;
+        },
+
+        restore: function restore() {
+            var object = this.object;
+
+            each(this.proxies, function (proxy) {
+                if (typeof object[proxy].restore == "function") {
+                    object[proxy].restore();
+                }
+            });
+        },
+
+        verify: function verify() {
+            var expectations = this.expectations || {};
+            var messages = [], met = [];
+
+            each(this.proxies, function (proxy) {
+                each(expectations[proxy], function (expectation) {
+                    if (!expectation.met()) {
+                        messages.push(expectation.toString());
+                    } else {
+                        met.push(expectation.toString());
+                    }
+                });
+            });
+
+            this.restore();
+
+            if (messages.length > 0) {
+                expectation.fail(messages.concat(met).join("\n"));
+            } else {
+                expectation.pass(messages.concat(met).join("\n"));
+            }
+
+            return true;
+        },
+
+        invokeMethod: function invokeMethod(method, thisValue, args) {
+            var expectations = this.expectations && this.expectations[method];
+            var length = expectations && expectations.length || 0, i;
+
+            for (i = 0; i < length; i += 1) {
+                if (!expectations[i].met() &&
+                    expectations[i].allowsCall(thisValue, args)) {
+                    return expectations[i].apply(thisValue, args);
+                }
+            }
+
+            var messages = [], available, exhausted = 0;
+
+            for (i = 0; i < length; i += 1) {
+                if (expectations[i].allowsCall(thisValue, args)) {
+                    available = available || expectations[i];
+                } else {
+                    exhausted += 1;
+                }
+                messages.push("    " + expectations[i].toString());
+            }
+
+            if (exhausted === 0) {
+                return available.apply(thisValue, args);
+            }
+
+            messages.unshift("Unexpected call: " + spy.spyCall.toString.call({
+                proxy: method,
+                args: args
+            }));
+
+            expectation.fail(messages.join("\n"));
+        }
+
+    });
+
+};
+
+})()
+},{"./sinon":1,"./match":8,"./spy":2}],7:[function(require,module,exports){
 (function(global){/*jslint eqeqeq: false, onevar: false, nomen: false, plusplus: false*/
 /*global module, require*/
 /**
@@ -11345,7 +11497,7 @@ mirrorPropAsAssertion("alwaysThrew", "%n did not always throw exception%C");
 module.exports = assert;
 
 })(window)
-},{"./sinon":2}],8:[function(require,module,exports){
+},{"./sinon":1}],8:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false, plusplus: false*/
 /*global module, require*/
 /**
@@ -11575,7 +11727,7 @@ match.date = match.typeOf("date");
 module.exports = match;
 
 })()
-},{"./sinon":2}],9:[function(require,module,exports){
+},{"./sinon":1}],10:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false, forin: true*/
 /*global module, require*/
 /**
@@ -11701,7 +11853,7 @@ module.exports = function (globalSinon) {
 };
 
 })()
-},{"./sinon":2}],11:[function(require,module,exports){
+},{"./sinon":1}],11:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false, plusplus: false*/
 /*global require, module*/
 /**
@@ -11821,7 +11973,7 @@ module.exports = function (globalSinon) {
 };
 
 })()
-},{"./sinon":2,"./util/fake_server":17}],12:[function(require,module,exports){
+},{"./sinon":1,"./util/fake_server":15}],12:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false, forin: true, plusplus: false*/
 /*global module, require*/
 /**
@@ -11882,7 +12034,7 @@ module.exports = function (sandbox) {
 };
 
 })()
-},{"./sinon":2}],14:[function(require,module,exports){
+},{"./sinon":1}],14:[function(require,module,exports){
 (function(global){/*jslint eqeqeq: false, onevar: false*/
 /*global module, require, ActiveXObject, XMLHttpRequest, DOMParser*/
 /**
@@ -12424,248 +12576,7 @@ var EventTarget = require("./event").EventTarget;
 })(typeof global === "object" ? global : this);
 
 })(window)
-},{"../sinon":2,"./event":20}],16:[function(require,module,exports){
-(function(){/**
- * @depend fake_server.js
- * @depend fake_timers.js
- */
-/*jslint browser: true, eqeqeq: false, onevar: false*/
-/*global*/
-/**
- * Add-on for sinon.fakeServer that automatically handles a fake timer along with
- * the FakeXMLHttpRequest. The direct inspiration for this add-on is jQuery
- * 1.3.x, which does not use xhr object's onreadystatehandler at all - instead,
- * it polls the object for completion with setInterval. Dispite the direct
- * motivation, there is nothing jQuery-specific in this file, so it can be used
- * in any environment where the ajax implementation depends on setInterval or
- * setTimeout.
- *
- * @author Christian Johansen (christian@cjohansen.no)
- * @license BSD
- *
- * Copyright (c) 2010-2013 Christian Johansen
- */
-"use strict";
-
-var fakeServer = require("./fake_server");
-var fakeTimers = require("./fake_timers");
-
-function Server() {}
-Server.prototype = fakeServer;
-
-var fakeServerWithClock = new Server();
-
-fakeServerWithClock.addRequest = function addRequest(xhr) {
-    if (xhr.async) {
-        if (typeof setTimeout.clock == "object") {
-            this.clock = setTimeout.clock;
-        } else {
-            this.clock = fakeTimers.useFakeTimers();
-            this.resetClock = true;
-        }
-
-        if (!this.longestTimeout) {
-            var clockSetTimeout = this.clock.setTimeout;
-            var clockSetInterval = this.clock.setInterval;
-            var server = this;
-
-            this.clock.setTimeout = function (fn, timeout) {
-                server.longestTimeout = Math.max(timeout, server.longestTimeout || 0);
-
-                return clockSetTimeout.apply(this, arguments);
-            };
-
-            this.clock.setInterval = function (fn, timeout) {
-                server.longestTimeout = Math.max(timeout, server.longestTimeout || 0);
-
-                return clockSetInterval.apply(this, arguments);
-            };
-        }
-    }
-
-    return fakeServer.addRequest.call(this, xhr);
-};
-
-fakeServerWithClock.respond = function respond() {
-    var returnVal = fakeServer.respond.apply(this, arguments);
-
-    if (this.clock) {
-        this.clock.tick(this.longestTimeout || 0);
-        this.longestTimeout = 0;
-
-        if (this.resetClock) {
-            this.clock.restore();
-            this.resetClock = false;
-        }
-    }
-
-    return returnVal;
-};
-
-fakeServerWithClock.restore = function restore() {
-    if (this.clock) {
-        this.clock.restore();
-    }
-
-    return fakeServer.restore.apply(this, arguments);
-};
-
-module.exports = fakeServerWithClock;
-
-})()
-},{"./fake_server":17,"./fake_timers":13}],10:[function(require,module,exports){
-(function(){/*jslint eqeqeq: false, onevar: false, nomen: false*/
-/*global module, require*/
-/**
- * Mock functions.
- *
- * @author Christian Johansen (christian@cjohansen.no)
- * @license BSD
- *
- * Copyright (c) 2010-2013 Christian Johansen
- */
-"use strict";
-
-var sinon = require("./sinon");
-var match = require("./match");
-var spy = require("./spy");
-
-function each(collection, callback) {
-    if (!collection) {
-        return;
-    }
-
-    for (var i = 0, l = collection.length; i < l; i += 1) {
-        callback(collection[i]);
-    }
-}
-
-module.exports = function (expectation) {
-
-    function mock(object) {
-        if (!object) {
-            return expectation.create("Anonymous mock");
-        }
-
-        return mock.create(object);
-    }
-
-    return sinon.extend(mock, {
-
-        create: function create(object) {
-            if (!object) {
-                throw new TypeError("object is null");
-            }
-
-            var mockObject = sinon.extend({}, mock);
-            mockObject.object = object;
-            delete mockObject.create;
-
-            return mockObject;
-        },
-
-        expects: function expects(method) {
-            if (!method) {
-                throw new TypeError("method is falsy");
-            }
-
-            if (!this.expectations) {
-                this.expectations = {};
-                this.proxies = [];
-            }
-
-            if (!this.expectations[method]) {
-                this.expectations[method] = [];
-                var mockObject = this;
-
-                sinon.wrapMethod(this.object, method, function () {
-                    return mockObject.invokeMethod(method, this, arguments);
-                });
-
-                this.proxies.push(method);
-            }
-
-            var exp = expectation.create(method);
-            this.expectations[method].push(exp);
-
-            return exp;
-        },
-
-        restore: function restore() {
-            var object = this.object;
-
-            each(this.proxies, function (proxy) {
-                if (typeof object[proxy].restore == "function") {
-                    object[proxy].restore();
-                }
-            });
-        },
-
-        verify: function verify() {
-            var expectations = this.expectations || {};
-            var messages = [], met = [];
-
-            each(this.proxies, function (proxy) {
-                each(expectations[proxy], function (expectation) {
-                    if (!expectation.met()) {
-                        messages.push(expectation.toString());
-                    } else {
-                        met.push(expectation.toString());
-                    }
-                });
-            });
-
-            this.restore();
-
-            if (messages.length > 0) {
-                expectation.fail(messages.concat(met).join("\n"));
-            } else {
-                expectation.pass(messages.concat(met).join("\n"));
-            }
-
-            return true;
-        },
-
-        invokeMethod: function invokeMethod(method, thisValue, args) {
-            var expectations = this.expectations && this.expectations[method];
-            var length = expectations && expectations.length || 0, i;
-
-            for (i = 0; i < length; i += 1) {
-                if (!expectations[i].met() &&
-                    expectations[i].allowsCall(thisValue, args)) {
-                    return expectations[i].apply(thisValue, args);
-                }
-            }
-
-            var messages = [], available, exhausted = 0;
-
-            for (i = 0; i < length; i += 1) {
-                if (expectations[i].allowsCall(thisValue, args)) {
-                    available = available || expectations[i];
-                } else {
-                    exhausted += 1;
-                }
-                messages.push("    " + expectations[i].toString());
-            }
-
-            if (exhausted === 0) {
-                return available.apply(thisValue, args);
-            }
-
-            messages.unshift("Unexpected call: " + spy.spyCall.toString.call({
-                proxy: method,
-                args: args
-            }));
-
-            expectation.fail(messages.join("\n"));
-        }
-
-    });
-
-};
-
-})()
-},{"./sinon":2,"./match":8,"./spy":3}],17:[function(require,module,exports){
+},{"../sinon":1,"./event":20}],15:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false, regexp: false, plusplus: false*/
 /*global module, require, window*/
 /**
@@ -12860,7 +12771,96 @@ exports.restore = function restore() {
 };
 
 })()
-},{"../sinon":2}],18:[function(require,module,exports){
+},{"../sinon":1}],16:[function(require,module,exports){
+(function(){/**
+ * @depend fake_server.js
+ * @depend fake_timers.js
+ */
+/*jslint browser: true, eqeqeq: false, onevar: false*/
+/*global*/
+/**
+ * Add-on for sinon.fakeServer that automatically handles a fake timer along with
+ * the FakeXMLHttpRequest. The direct inspiration for this add-on is jQuery
+ * 1.3.x, which does not use xhr object's onreadystatehandler at all - instead,
+ * it polls the object for completion with setInterval. Dispite the direct
+ * motivation, there is nothing jQuery-specific in this file, so it can be used
+ * in any environment where the ajax implementation depends on setInterval or
+ * setTimeout.
+ *
+ * @author Christian Johansen (christian@cjohansen.no)
+ * @license BSD
+ *
+ * Copyright (c) 2010-2013 Christian Johansen
+ */
+"use strict";
+
+var fakeServer = require("./fake_server");
+var fakeTimers = require("./fake_timers");
+
+function Server() {}
+Server.prototype = fakeServer;
+
+var fakeServerWithClock = new Server();
+
+fakeServerWithClock.addRequest = function addRequest(xhr) {
+    if (xhr.async) {
+        if (typeof setTimeout.clock == "object") {
+            this.clock = setTimeout.clock;
+        } else {
+            this.clock = fakeTimers.useFakeTimers();
+            this.resetClock = true;
+        }
+
+        if (!this.longestTimeout) {
+            var clockSetTimeout = this.clock.setTimeout;
+            var clockSetInterval = this.clock.setInterval;
+            var server = this;
+
+            this.clock.setTimeout = function (fn, timeout) {
+                server.longestTimeout = Math.max(timeout, server.longestTimeout || 0);
+
+                return clockSetTimeout.apply(this, arguments);
+            };
+
+            this.clock.setInterval = function (fn, timeout) {
+                server.longestTimeout = Math.max(timeout, server.longestTimeout || 0);
+
+                return clockSetInterval.apply(this, arguments);
+            };
+        }
+    }
+
+    return fakeServer.addRequest.call(this, xhr);
+};
+
+fakeServerWithClock.respond = function respond() {
+    var returnVal = fakeServer.respond.apply(this, arguments);
+
+    if (this.clock) {
+        this.clock.tick(this.longestTimeout || 0);
+        this.longestTimeout = 0;
+
+        if (this.resetClock) {
+            this.clock.restore();
+            this.resetClock = false;
+        }
+    }
+
+    return returnVal;
+};
+
+fakeServerWithClock.restore = function restore() {
+    if (this.clock) {
+        this.clock.restore();
+    }
+
+    return fakeServer.restore.apply(this, arguments);
+};
+
+module.exports = fakeServerWithClock;
+
+})()
+},{"./fake_server":15,"./fake_timers":9}],18:[function(require,module,exports){
 var events = require('events');
 
 exports.isArray = isArray;
@@ -13213,1103 +13213,80 @@ exports.format = function(f) {
   return str;
 };
 
-},{"events":21}],22:[function(require,module,exports){
-/*!
- * chai
- * Copyright(c) 2011-2013 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
+},{"events":21}],20:[function(require,module,exports){
+(function(){/*jslint eqeqeq: false, onevar: false*/
+/*global module, require*/
+/**
+ * Minimal Event interface implementation
+ *
+ * Original implementation by Sven Fuchs: https://gist.github.com/995028
+ * Modifications and tests by Christian Johansen.
+ *
+ * @author Sven Fuchs (svenfuchs@artweb-design.de)
+ * @author Christian Johansen (christian@cjohansen.no)
+ * @license BSD
+ *
+ * Copyright (c) 2011 Sven Fuchs, Christian Johansen
  */
+"use strict";
 
-module.exports = function (chai, util) {
-  chai.expect = function (val, message) {
-    return new chai.Assertion(val, message);
-  };
+function Event(type, bubbles, cancelable, target) {
+    this.initEvent(type, bubbles, cancelable, target);
 };
 
-
-},{}],23:[function(require,module,exports){
-/*!
- * chai
- * Copyright(c) 2011-2013 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-
-module.exports = function (chai, util) {
-
-  /*!
-   * Chai dependencies.
-   */
-
-  var Assertion = chai.Assertion
-    , flag = util.flag;
-
-  /*!
-   * Module export.
-   */
-
-  /**
-   * ### assert(expression, message)
-   *
-   * Write your own test expressions.
-   *
-   *     assert('foo' !== 'bar', 'foo is not bar');
-   *     assert(Array.isArray([]), 'empty arrays are arrays');
-   *
-   * @param {Mixed} expression to test for truthiness
-   * @param {String} message to display on error
-   * @name assert
-   * @api public
-   */
-
-  var assert = chai.assert = function (express, errmsg) {
-    var test = new Assertion(null);
-    test.assert(
-        express
-      , errmsg
-      , '[ negation message unavailable ]'
-    );
-  };
-
-  /**
-   * ### .fail(actual, expected, [message], [operator])
-   *
-   * Throw a failure. Node.js `assert` module-compatible.
-   *
-   * @name fail
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @param {String} operator
-   * @api public
-   */
-
-  assert.fail = function (actual, expected, message, operator) {
-    throw new chai.AssertionError({
-        actual: actual
-      , expected: expected
-      , message: message
-      , operator: operator
-      , stackStartFunction: assert.fail
-    });
-  };
-
-  /**
-   * ### .ok(object, [message])
-   *
-   * Asserts that `object` is truthy.
-   *
-   *     assert.ok('everything', 'everything is ok');
-   *     assert.ok(false, 'this will fail');
-   *
-   * @name ok
-   * @param {Mixed} object to test
-   * @param {String} message
-   * @api public
-   */
-
-  assert.ok = function (val, msg) {
-    new Assertion(val, msg).is.ok;
-  };
-
-  /**
-   * ### .notOk(object, [message])
-   *
-   * Asserts that `object` is falsy.
-   *
-   *     assert.notOk('everything', 'this will fail');
-   *     assert.notOk(false, 'this will pass');
-   *
-   * @name notOk
-   * @param {Mixed} object to test
-   * @param {String} message
-   * @api public
-   */
-
-  assert.notOk = function (val, msg) {
-    new Assertion(val, msg).is.not.ok;
-  };
-
-  /**
-   * ### .equal(actual, expected, [message])
-   *
-   * Asserts non-strict equality (`==`) of `actual` and `expected`.
-   *
-   *     assert.equal(3, '3', '== coerces values to strings');
-   *
-   * @name equal
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @api public
-   */
-
-  assert.equal = function (act, exp, msg) {
-    var test = new Assertion(act, msg);
-
-    test.assert(
-        exp == flag(test, 'object')
-      , 'expected #{this} to equal #{exp}'
-      , 'expected #{this} to not equal #{act}'
-      , exp
-      , act
-    );
-  };
-
-  /**
-   * ### .notEqual(actual, expected, [message])
-   *
-   * Asserts non-strict inequality (`!=`) of `actual` and `expected`.
-   *
-   *     assert.notEqual(3, 4, 'these numbers are not equal');
-   *
-   * @name notEqual
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @api public
-   */
-
-  assert.notEqual = function (act, exp, msg) {
-    var test = new Assertion(act, msg);
-
-    test.assert(
-        exp != flag(test, 'object')
-      , 'expected #{this} to not equal #{exp}'
-      , 'expected #{this} to equal #{act}'
-      , exp
-      , act
-    );
-  };
-
-  /**
-   * ### .strictEqual(actual, expected, [message])
-   *
-   * Asserts strict equality (`===`) of `actual` and `expected`.
-   *
-   *     assert.strictEqual(true, true, 'these booleans are strictly equal');
-   *
-   * @name strictEqual
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @api public
-   */
-
-  assert.strictEqual = function (act, exp, msg) {
-    new Assertion(act, msg).to.equal(exp);
-  };
-
-  /**
-   * ### .notStrictEqual(actual, expected, [message])
-   *
-   * Asserts strict inequality (`!==`) of `actual` and `expected`.
-   *
-   *     assert.notStrictEqual(3, '3', 'no coercion for strict equality');
-   *
-   * @name notStrictEqual
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @api public
-   */
-
-  assert.notStrictEqual = function (act, exp, msg) {
-    new Assertion(act, msg).to.not.equal(exp);
-  };
-
-  /**
-   * ### .deepEqual(actual, expected, [message])
-   *
-   * Asserts that `actual` is deeply equal to `expected`.
-   *
-   *     assert.deepEqual({ tea: 'green' }, { tea: 'green' });
-   *
-   * @name deepEqual
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @api public
-   */
-
-  assert.deepEqual = function (act, exp, msg) {
-    new Assertion(act, msg).to.eql(exp);
-  };
-
-  /**
-   * ### .notDeepEqual(actual, expected, [message])
-   *
-   * Assert that `actual` is not deeply equal to `expected`.
-   *
-   *     assert.notDeepEqual({ tea: 'green' }, { tea: 'jasmine' });
-   *
-   * @name notDeepEqual
-   * @param {Mixed} actual
-   * @param {Mixed} expected
-   * @param {String} message
-   * @api public
-   */
-
-  assert.notDeepEqual = function (act, exp, msg) {
-    new Assertion(act, msg).to.not.eql(exp);
-  };
-
-  /**
-   * ### .isTrue(value, [message])
-   *
-   * Asserts that `value` is true.
-   *
-   *     var teaServed = true;
-   *     assert.isTrue(teaServed, 'the tea has been served');
-   *
-   * @name isTrue
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isTrue = function (val, msg) {
-    new Assertion(val, msg).is['true'];
-  };
-
-  /**
-   * ### .isFalse(value, [message])
-   *
-   * Asserts that `value` is false.
-   *
-   *     var teaServed = false;
-   *     assert.isFalse(teaServed, 'no tea yet? hmm...');
-   *
-   * @name isFalse
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isFalse = function (val, msg) {
-    new Assertion(val, msg).is['false'];
-  };
-
-  /**
-   * ### .isNull(value, [message])
-   *
-   * Asserts that `value` is null.
-   *
-   *     assert.isNull(err, 'there was no error');
-   *
-   * @name isNull
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isNull = function (val, msg) {
-    new Assertion(val, msg).to.equal(null);
-  };
-
-  /**
-   * ### .isNotNull(value, [message])
-   *
-   * Asserts that `value` is not null.
-   *
-   *     var tea = 'tasty chai';
-   *     assert.isNotNull(tea, 'great, time for tea!');
-   *
-   * @name isNotNull
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isNotNull = function (val, msg) {
-    new Assertion(val, msg).to.not.equal(null);
-  };
-
-  /**
-   * ### .isUndefined(value, [message])
-   *
-   * Asserts that `value` is `undefined`.
-   *
-   *     var tea;
-   *     assert.isUndefined(tea, 'no tea defined');
-   *
-   * @name isUndefined
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isUndefined = function (val, msg) {
-    new Assertion(val, msg).to.equal(undefined);
-  };
-
-  /**
-   * ### .isDefined(value, [message])
-   *
-   * Asserts that `value` is not `undefined`.
-   *
-   *     var tea = 'cup of chai';
-   *     assert.isDefined(tea, 'tea has been defined');
-   *
-   * @name isDefined
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isDefined = function (val, msg) {
-    new Assertion(val, msg).to.not.equal(undefined);
-  };
-
-  /**
-   * ### .isFunction(value, [message])
-   *
-   * Asserts that `value` is a function.
-   *
-   *     function serveTea() { return 'cup of tea'; };
-   *     assert.isFunction(serveTea, 'great, we can have tea now');
-   *
-   * @name isFunction
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isFunction = function (val, msg) {
-    new Assertion(val, msg).to.be.a('function');
-  };
-
-  /**
-   * ### .isNotFunction(value, [message])
-   *
-   * Asserts that `value` is _not_ a function.
-   *
-   *     var serveTea = [ 'heat', 'pour', 'sip' ];
-   *     assert.isNotFunction(serveTea, 'great, we have listed the steps');
-   *
-   * @name isNotFunction
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isNotFunction = function (val, msg) {
-    new Assertion(val, msg).to.not.be.a('function');
-  };
-
-  /**
-   * ### .isObject(value, [message])
-   *
-   * Asserts that `value` is an object (as revealed by
-   * `Object.prototype.toString`).
-   *
-   *     var selection = { name: 'Chai', serve: 'with spices' };
-   *     assert.isObject(selection, 'tea selection is an object');
-   *
-   * @name isObject
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isObject = function (val, msg) {
-    new Assertion(val, msg).to.be.a('object');
-  };
-
-  /**
-   * ### .isNotObject(value, [message])
-   *
-   * Asserts that `value` is _not_ an object.
-   *
-   *     var selection = 'chai'
-   *     assert.isObject(selection, 'tea selection is not an object');
-   *     assert.isObject(null, 'null is not an object');
-   *
-   * @name isNotObject
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isNotObject = function (val, msg) {
-    new Assertion(val, msg).to.not.be.a('object');
-  };
-
-  /**
-   * ### .isArray(value, [message])
-   *
-   * Asserts that `value` is an array.
-   *
-   *     var menu = [ 'green', 'chai', 'oolong' ];
-   *     assert.isArray(menu, 'what kind of tea do we want?');
-   *
-   * @name isArray
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isArray = function (val, msg) {
-    new Assertion(val, msg).to.be.an('array');
-  };
-
-  /**
-   * ### .isNotArray(value, [message])
-   *
-   * Asserts that `value` is _not_ an array.
-   *
-   *     var menu = 'green|chai|oolong';
-   *     assert.isNotArray(menu, 'what kind of tea do we want?');
-   *
-   * @name isNotArray
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isNotArray = function (val, msg) {
-    new Assertion(val, msg).to.not.be.an('array');
-  };
-
-  /**
-   * ### .isString(value, [message])
-   *
-   * Asserts that `value` is a string.
-   *
-   *     var teaOrder = 'chai';
-   *     assert.isString(teaOrder, 'order placed');
-   *
-   * @name isString
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isString = function (val, msg) {
-    new Assertion(val, msg).to.be.a('string');
-  };
-
-  /**
-   * ### .isNotString(value, [message])
-   *
-   * Asserts that `value` is _not_ a string.
-   *
-   *     var teaOrder = 4;
-   *     assert.isNotString(teaOrder, 'order placed');
-   *
-   * @name isNotString
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isNotString = function (val, msg) {
-    new Assertion(val, msg).to.not.be.a('string');
-  };
-
-  /**
-   * ### .isNumber(value, [message])
-   *
-   * Asserts that `value` is a number.
-   *
-   *     var cups = 2;
-   *     assert.isNumber(cups, 'how many cups');
-   *
-   * @name isNumber
-   * @param {Number} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isNumber = function (val, msg) {
-    new Assertion(val, msg).to.be.a('number');
-  };
-
-  /**
-   * ### .isNotNumber(value, [message])
-   *
-   * Asserts that `value` is _not_ a number.
-   *
-   *     var cups = '2 cups please';
-   *     assert.isNotNumber(cups, 'how many cups');
-   *
-   * @name isNotNumber
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isNotNumber = function (val, msg) {
-    new Assertion(val, msg).to.not.be.a('number');
-  };
-
-  /**
-   * ### .isBoolean(value, [message])
-   *
-   * Asserts that `value` is a boolean.
-   *
-   *     var teaReady = true
-   *       , teaServed = false;
-   *
-   *     assert.isBoolean(teaReady, 'is the tea ready');
-   *     assert.isBoolean(teaServed, 'has tea been served');
-   *
-   * @name isBoolean
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isBoolean = function (val, msg) {
-    new Assertion(val, msg).to.be.a('boolean');
-  };
-
-  /**
-   * ### .isNotBoolean(value, [message])
-   *
-   * Asserts that `value` is _not_ a boolean.
-   *
-   *     var teaReady = 'yep'
-   *       , teaServed = 'nope';
-   *
-   *     assert.isNotBoolean(teaReady, 'is the tea ready');
-   *     assert.isNotBoolean(teaServed, 'has tea been served');
-   *
-   * @name isNotBoolean
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.isNotBoolean = function (val, msg) {
-    new Assertion(val, msg).to.not.be.a('boolean');
-  };
-
-  /**
-   * ### .typeOf(value, name, [message])
-   *
-   * Asserts that `value`'s type is `name`, as determined by
-   * `Object.prototype.toString`.
-   *
-   *     assert.typeOf({ tea: 'chai' }, 'object', 'we have an object');
-   *     assert.typeOf(['chai', 'jasmine'], 'array', 'we have an array');
-   *     assert.typeOf('tea', 'string', 'we have a string');
-   *     assert.typeOf(/tea/, 'regexp', 'we have a regular expression');
-   *     assert.typeOf(null, 'null', 'we have a null');
-   *     assert.typeOf(undefined, 'undefined', 'we have an undefined');
-   *
-   * @name typeOf
-   * @param {Mixed} value
-   * @param {String} name
-   * @param {String} message
-   * @api public
-   */
-
-  assert.typeOf = function (val, type, msg) {
-    new Assertion(val, msg).to.be.a(type);
-  };
-
-  /**
-   * ### .notTypeOf(value, name, [message])
-   *
-   * Asserts that `value`'s type is _not_ `name`, as determined by
-   * `Object.prototype.toString`.
-   *
-   *     assert.notTypeOf('tea', 'number', 'strings are not numbers');
-   *
-   * @name notTypeOf
-   * @param {Mixed} value
-   * @param {String} typeof name
-   * @param {String} message
-   * @api public
-   */
-
-  assert.notTypeOf = function (val, type, msg) {
-    new Assertion(val, msg).to.not.be.a(type);
-  };
-
-  /**
-   * ### .instanceOf(object, constructor, [message])
-   *
-   * Asserts that `value` is an instance of `constructor`.
-   *
-   *     var Tea = function (name) { this.name = name; }
-   *       , chai = new Tea('chai');
-   *
-   *     assert.instanceOf(chai, Tea, 'chai is an instance of tea');
-   *
-   * @name instanceOf
-   * @param {Object} object
-   * @param {Constructor} constructor
-   * @param {String} message
-   * @api public
-   */
-
-  assert.instanceOf = function (val, type, msg) {
-    new Assertion(val, msg).to.be.instanceOf(type);
-  };
-
-  /**
-   * ### .notInstanceOf(object, constructor, [message])
-   *
-   * Asserts `value` is not an instance of `constructor`.
-   *
-   *     var Tea = function (name) { this.name = name; }
-   *       , chai = new String('chai');
-   *
-   *     assert.notInstanceOf(chai, Tea, 'chai is not an instance of tea');
-   *
-   * @name notInstanceOf
-   * @param {Object} object
-   * @param {Constructor} constructor
-   * @param {String} message
-   * @api public
-   */
-
-  assert.notInstanceOf = function (val, type, msg) {
-    new Assertion(val, msg).to.not.be.instanceOf(type);
-  };
-
-  /**
-   * ### .include(haystack, needle, [message])
-   *
-   * Asserts that `haystack` includes `needle`. Works
-   * for strings and arrays.
-   *
-   *     assert.include('foobar', 'bar', 'foobar contains string "bar"');
-   *     assert.include([ 1, 2, 3 ], 3, 'array contains value');
-   *
-   * @name include
-   * @param {Array|String} haystack
-   * @param {Mixed} needle
-   * @param {String} message
-   * @api public
-   */
-
-  assert.include = function (exp, inc, msg) {
-    var obj = new Assertion(exp, msg);
-
-    if (Array.isArray(exp)) {
-      obj.to.include(inc);
-    } else if ('string' === typeof exp) {
-      obj.to.contain.string(inc);
-    } else {
-      throw new chai.AssertionError(
-          'expected an array or string'
-        , null
-        , assert.include
-      );
+Event.prototype = {
+    initEvent: function(type, bubbles, cancelable, target) {
+        this.type = type;
+        this.bubbles = bubbles;
+        this.cancelable = cancelable;
+        this.target = target;
+    },
+
+    stopPropagation: function () {},
+
+    preventDefault: function () {
+        this.defaultPrevented = true;
     }
-  };
-
-  /**
-   * ### .notInclude(haystack, needle, [message])
-   *
-   * Asserts that `haystack` does not include `needle`. Works
-   * for strings and arrays.
-   *i
-   *     assert.notInclude('foobar', 'baz', 'string not include substring');
-   *     assert.notInclude([ 1, 2, 3 ], 4, 'array not include contain value');
-   *
-   * @name notInclude
-   * @param {Array|String} haystack
-   * @param {Mixed} needle
-   * @param {String} message
-   * @api public
-   */
-
-  assert.notInclude = function (exp, inc, msg) {
-    var obj = new Assertion(exp, msg);
-
-    if (Array.isArray(exp)) {
-      obj.to.not.include(inc);
-    } else if ('string' === typeof exp) {
-      obj.to.not.contain.string(inc);
-    } else {
-      throw new chai.AssertionError(
-          'expected an array or string'
-        , null
-        , assert.notInclude
-      );
-    }
-  };
-
-  /**
-   * ### .match(value, regexp, [message])
-   *
-   * Asserts that `value` matches the regular expression `regexp`.
-   *
-   *     assert.match('foobar', /^foo/, 'regexp matches');
-   *
-   * @name match
-   * @param {Mixed} value
-   * @param {RegExp} regexp
-   * @param {String} message
-   * @api public
-   */
-
-  assert.match = function (exp, re, msg) {
-    new Assertion(exp, msg).to.match(re);
-  };
-
-  /**
-   * ### .notMatch(value, regexp, [message])
-   *
-   * Asserts that `value` does not match the regular expression `regexp`.
-   *
-   *     assert.notMatch('foobar', /^foo/, 'regexp does not match');
-   *
-   * @name notMatch
-   * @param {Mixed} value
-   * @param {RegExp} regexp
-   * @param {String} message
-   * @api public
-   */
-
-  assert.notMatch = function (exp, re, msg) {
-    new Assertion(exp, msg).to.not.match(re);
-  };
-
-  /**
-   * ### .property(object, property, [message])
-   *
-   * Asserts that `object` has a property named by `property`.
-   *
-   *     assert.property({ tea: { green: 'matcha' }}, 'tea');
-   *
-   * @name property
-   * @param {Object} object
-   * @param {String} property
-   * @param {String} message
-   * @api public
-   */
-
-  assert.property = function (obj, prop, msg) {
-    new Assertion(obj, msg).to.have.property(prop);
-  };
-
-  /**
-   * ### .notProperty(object, property, [message])
-   *
-   * Asserts that `object` does _not_ have a property named by `property`.
-   *
-   *     assert.notProperty({ tea: { green: 'matcha' }}, 'coffee');
-   *
-   * @name notProperty
-   * @param {Object} object
-   * @param {String} property
-   * @param {String} message
-   * @api public
-   */
-
-  assert.notProperty = function (obj, prop, msg) {
-    new Assertion(obj, msg).to.not.have.property(prop);
-  };
-
-  /**
-   * ### .deepProperty(object, property, [message])
-   *
-   * Asserts that `object` has a property named by `property`, which can be a
-   * string using dot- and bracket-notation for deep reference.
-   *
-   *     assert.deepProperty({ tea: { green: 'matcha' }}, 'tea.green');
-   *
-   * @name deepProperty
-   * @param {Object} object
-   * @param {String} property
-   * @param {String} message
-   * @api public
-   */
-
-  assert.deepProperty = function (obj, prop, msg) {
-    new Assertion(obj, msg).to.have.deep.property(prop);
-  };
-
-  /**
-   * ### .notDeepProperty(object, property, [message])
-   *
-   * Asserts that `object` does _not_ have a property named by `property`, which
-   * can be a string using dot- and bracket-notation for deep reference.
-   *
-   *     assert.notDeepProperty({ tea: { green: 'matcha' }}, 'tea.oolong');
-   *
-   * @name notDeepProperty
-   * @param {Object} object
-   * @param {String} property
-   * @param {String} message
-   * @api public
-   */
-
-  assert.notDeepProperty = function (obj, prop, msg) {
-    new Assertion(obj, msg).to.not.have.deep.property(prop);
-  };
-
-  /**
-   * ### .propertyVal(object, property, value, [message])
-   *
-   * Asserts that `object` has a property named by `property` with value given
-   * by `value`.
-   *
-   *     assert.propertyVal({ tea: 'is good' }, 'tea', 'is good');
-   *
-   * @name propertyVal
-   * @param {Object} object
-   * @param {String} property
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.propertyVal = function (obj, prop, val, msg) {
-    new Assertion(obj, msg).to.have.property(prop, val);
-  };
-
-  /**
-   * ### .propertyNotVal(object, property, value, [message])
-   *
-   * Asserts that `object` has a property named by `property`, but with a value
-   * different from that given by `value`.
-   *
-   *     assert.propertyNotVal({ tea: 'is good' }, 'tea', 'is bad');
-   *
-   * @name propertyNotVal
-   * @param {Object} object
-   * @param {String} property
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.propertyNotVal = function (obj, prop, val, msg) {
-    new Assertion(obj, msg).to.not.have.property(prop, val);
-  };
-
-  /**
-   * ### .deepPropertyVal(object, property, value, [message])
-   *
-   * Asserts that `object` has a property named by `property` with value given
-   * by `value`. `property` can use dot- and bracket-notation for deep
-   * reference.
-   *
-   *     assert.deepPropertyVal({ tea: { green: 'matcha' }}, 'tea.green', 'matcha');
-   *
-   * @name deepPropertyVal
-   * @param {Object} object
-   * @param {String} property
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.deepPropertyVal = function (obj, prop, val, msg) {
-    new Assertion(obj, msg).to.have.deep.property(prop, val);
-  };
-
-  /**
-   * ### .deepPropertyNotVal(object, property, value, [message])
-   *
-   * Asserts that `object` has a property named by `property`, but with a value
-   * different from that given by `value`. `property` can use dot- and
-   * bracket-notation for deep reference.
-   *
-   *     assert.deepPropertyNotVal({ tea: { green: 'matcha' }}, 'tea.green', 'konacha');
-   *
-   * @name deepPropertyNotVal
-   * @param {Object} object
-   * @param {String} property
-   * @param {Mixed} value
-   * @param {String} message
-   * @api public
-   */
-
-  assert.deepPropertyNotVal = function (obj, prop, val, msg) {
-    new Assertion(obj, msg).to.not.have.deep.property(prop, val);
-  };
-
-  /**
-   * ### .lengthOf(object, length, [message])
-   *
-   * Asserts that `object` has a `length` property with the expected value.
-   *
-   *     assert.lengthOf([1,2,3], 3, 'array has length of 3');
-   *     assert.lengthOf('foobar', 5, 'string has length of 6');
-   *
-   * @name lengthOf
-   * @param {Mixed} object
-   * @param {Number} length
-   * @param {String} message
-   * @api public
-   */
-
-  assert.lengthOf = function (exp, len, msg) {
-    new Assertion(exp, msg).to.have.length(len);
-  };
-
-  /**
-   * ### .throws(function, [constructor/string/regexp], [string/regexp], [message])
-   *
-   * Asserts that `function` will throw an error that is an instance of
-   * `constructor`, or alternately that it will throw an error with message
-   * matching `regexp`.
-   *
-   *     assert.throw(fn, 'function throws a reference error');
-   *     assert.throw(fn, /function throws a reference error/);
-   *     assert.throw(fn, ReferenceError);
-   *     assert.throw(fn, ReferenceError, 'function throws a reference error');
-   *     assert.throw(fn, ReferenceError, /function throws a reference error/);
-   *
-   * @name throws
-   * @alias throw
-   * @alias Throw
-   * @param {Function} function
-   * @param {ErrorConstructor} constructor
-   * @param {RegExp} regexp
-   * @param {String} message
-   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
-   * @api public
-   */
-
-  assert.Throw = function (fn, errt, errs, msg) {
-    if ('string' === typeof errt || errt instanceof RegExp) {
-      errs = errt;
-      errt = null;
-    }
-
-    new Assertion(fn, msg).to.Throw(errt, errs);
-  };
-
-  /**
-   * ### .doesNotThrow(function, [constructor/regexp], [message])
-   *
-   * Asserts that `function` will _not_ throw an error that is an instance of
-   * `constructor`, or alternately that it will not throw an error with message
-   * matching `regexp`.
-   *
-   *     assert.doesNotThrow(fn, Error, 'function does not throw');
-   *
-   * @name doesNotThrow
-   * @param {Function} function
-   * @param {ErrorConstructor} constructor
-   * @param {RegExp} regexp
-   * @param {String} message
-   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
-   * @api public
-   */
-
-  assert.doesNotThrow = function (fn, type, msg) {
-    if ('string' === typeof type) {
-      msg = type;
-      type = null;
-    }
-
-    new Assertion(fn, msg).to.not.Throw(type);
-  };
-
-  /**
-   * ### .operator(val1, operator, val2, [message])
-   *
-   * Compares two values using `operator`.
-   *
-   *     assert.operator(1, '<', 2, 'everything is ok');
-   *     assert.operator(1, '>', 2, 'this will fail');
-   *
-   * @name operator
-   * @param {Mixed} val1
-   * @param {String} operator
-   * @param {Mixed} val2
-   * @param {String} message
-   * @api public
-   */
-
-  assert.operator = function (val, operator, val2, msg) {
-    if (!~['==', '===', '>', '>=', '<', '<=', '!=', '!=='].indexOf(operator)) {
-      throw new Error('Invalid operator "' + operator + '"');
-    }
-    var test = new Assertion(eval(val + operator + val2), msg);
-    test.assert(
-        true === flag(test, 'object')
-      , 'expected ' + util.inspect(val) + ' to be ' + operator + ' ' + util.inspect(val2)
-      , 'expected ' + util.inspect(val) + ' to not be ' + operator + ' ' + util.inspect(val2) );
-  };
-
-  /**
-   * ### .closeTo(actual, expected, delta, [message])
-   *
-   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
-   *
-   *     assert.closeTo(1.5, 1, 0.5, 'numbers are close');
-   *
-   * @name closeTo
-   * @param {Number} actual
-   * @param {Number} expected
-   * @param {Number} delta
-   * @param {String} message
-   * @api public
-   */
-
-  assert.closeTo = function (act, exp, delta, msg) {
-    new Assertion(act, msg).to.be.closeTo(exp, delta);
-  };
-
-  /**
-   * ### .sameMembers(set1, set2, [message])
-   *
-   * Asserts that `set1` and `set2` have the same members.
-   * Order is not taken into account.
-   *
-   *     assert.sameMembers([ 1, 2, 3 ], [ 2, 1, 3 ], 'same members');
-   *
-   * @name sameMembers
-   * @param {Array} superset
-   * @param {Array} subset
-   * @param {String} message
-   * @api public
-   */
-
-  assert.sameMembers = function (set1, set2, msg) {
-    new Assertion(set1, msg).to.have.same.members(set2);
-  }
-
-  /**
-   * ### .includeMembers(superset, subset, [message])
-   *
-   * Asserts that `subset` is included in `superset`.
-   * Order is not taken into account.
-   *
-   *     assert.includeMembers([ 1, 2, 3 ], [ 2, 1 ], 'include members');
-   *
-   * @name includeMembers
-   * @param {Array} superset
-   * @param {Array} subset
-   * @param {String} message
-   * @api public
-   */
-
-  assert.includeMembers = function (superset, subset, msg) {
-    new Assertion(superset, msg).to.include.members(subset);
-  }
-
-  /*!
-   * Undocumented / untested
-   */
-
-  assert.ifError = function (val, msg) {
-    new Assertion(val, msg).to.not.be.ok;
-  };
-
-  /*!
-   * Aliases.
-   */
-
-  (function alias(name, as){
-    assert[as] = assert[name];
-    return alias;
-  })
-  ('Throw', 'throw')
-  ('Throw', 'throws');
 };
 
-},{}],24:[function(require,module,exports){
+var EventTarget = {
+    addEventListener: function addEventListener(event, listener, useCapture) {
+        this.eventListeners = this.eventListeners || {};
+        this.eventListeners[event] = this.eventListeners[event] || [];
+        this.eventListeners[event].push(listener);
+    },
+
+    removeEventListener: function removeEventListener(event, listener, useCapture) {
+        var listeners = this.eventListeners && this.eventListeners[event] || [];
+
+        for (var i = 0, l = listeners.length; i < l; ++i) {
+            if (listeners[i] == listener) {
+                return listeners.splice(i, 1);
+            }
+        }
+    },
+
+    dispatchEvent: function dispatchEvent(event) {
+        var type = event.type;
+        var listeners = this.eventListeners && this.eventListeners[type] || [];
+
+        for (var i = 0; i < listeners.length; i++) {
+            if (typeof listeners[i] == "function") {
+                listeners[i].call(this, event);
+            } else {
+                listeners[i].handleEvent(event);
+            }
+        }
+
+        return !!event.defaultPrevented;
+    }
+};
+
+exports.Event = Event;
+exports.EventTarget = EventTarget;
+
+})()
+},{}],22:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -14441,7 +13418,7 @@ module.exports = function (_chai, util) {
   });
 };
 
-},{}],25:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -15713,7 +14690,21 @@ module.exports = function (chai, _) {
   });
 };
 
-},{}],26:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011-2013 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+module.exports = function (chai, util) {
+  chai.expect = function (val, message) {
+    return new chai.Assertion(val, message);
+  };
+};
+
+
+},{}],25:[function(require,module,exports){
 (function(){/*!
  * chai
  * Copyright(c) 2011-2013 Jake Luer <jake@alogicalparadox.com>
@@ -15792,79 +14783,1088 @@ module.exports = function (chai, util) {
 };
 
 })()
-},{}],20:[function(require,module,exports){
-(function(){/*jslint eqeqeq: false, onevar: false*/
-/*global module, require*/
-/**
- * Minimal Event interface implementation
- *
- * Original implementation by Sven Fuchs: https://gist.github.com/995028
- * Modifications and tests by Christian Johansen.
- *
- * @author Sven Fuchs (svenfuchs@artweb-design.de)
- * @author Christian Johansen (christian@cjohansen.no)
- * @license BSD
- *
- * Copyright (c) 2011 Sven Fuchs, Christian Johansen
+},{}],26:[function(require,module,exports){
+/*!
+ * chai
+ * Copyright(c) 2011-2013 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
  */
-"use strict";
 
-function Event(type, bubbles, cancelable, target) {
-    this.initEvent(type, bubbles, cancelable, target);
-};
 
-Event.prototype = {
-    initEvent: function(type, bubbles, cancelable, target) {
-        this.type = type;
-        this.bubbles = bubbles;
-        this.cancelable = cancelable;
-        this.target = target;
-    },
+module.exports = function (chai, util) {
 
-    stopPropagation: function () {},
+  /*!
+   * Chai dependencies.
+   */
 
-    preventDefault: function () {
-        this.defaultPrevented = true;
+  var Assertion = chai.Assertion
+    , flag = util.flag;
+
+  /*!
+   * Module export.
+   */
+
+  /**
+   * ### assert(expression, message)
+   *
+   * Write your own test expressions.
+   *
+   *     assert('foo' !== 'bar', 'foo is not bar');
+   *     assert(Array.isArray([]), 'empty arrays are arrays');
+   *
+   * @param {Mixed} expression to test for truthiness
+   * @param {String} message to display on error
+   * @name assert
+   * @api public
+   */
+
+  var assert = chai.assert = function (express, errmsg) {
+    var test = new Assertion(null);
+    test.assert(
+        express
+      , errmsg
+      , '[ negation message unavailable ]'
+    );
+  };
+
+  /**
+   * ### .fail(actual, expected, [message], [operator])
+   *
+   * Throw a failure. Node.js `assert` module-compatible.
+   *
+   * @name fail
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @param {String} operator
+   * @api public
+   */
+
+  assert.fail = function (actual, expected, message, operator) {
+    throw new chai.AssertionError({
+        actual: actual
+      , expected: expected
+      , message: message
+      , operator: operator
+      , stackStartFunction: assert.fail
+    });
+  };
+
+  /**
+   * ### .ok(object, [message])
+   *
+   * Asserts that `object` is truthy.
+   *
+   *     assert.ok('everything', 'everything is ok');
+   *     assert.ok(false, 'this will fail');
+   *
+   * @name ok
+   * @param {Mixed} object to test
+   * @param {String} message
+   * @api public
+   */
+
+  assert.ok = function (val, msg) {
+    new Assertion(val, msg).is.ok;
+  };
+
+  /**
+   * ### .notOk(object, [message])
+   *
+   * Asserts that `object` is falsy.
+   *
+   *     assert.notOk('everything', 'this will fail');
+   *     assert.notOk(false, 'this will pass');
+   *
+   * @name notOk
+   * @param {Mixed} object to test
+   * @param {String} message
+   * @api public
+   */
+
+  assert.notOk = function (val, msg) {
+    new Assertion(val, msg).is.not.ok;
+  };
+
+  /**
+   * ### .equal(actual, expected, [message])
+   *
+   * Asserts non-strict equality (`==`) of `actual` and `expected`.
+   *
+   *     assert.equal(3, '3', '== coerces values to strings');
+   *
+   * @name equal
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @api public
+   */
+
+  assert.equal = function (act, exp, msg) {
+    var test = new Assertion(act, msg);
+
+    test.assert(
+        exp == flag(test, 'object')
+      , 'expected #{this} to equal #{exp}'
+      , 'expected #{this} to not equal #{act}'
+      , exp
+      , act
+    );
+  };
+
+  /**
+   * ### .notEqual(actual, expected, [message])
+   *
+   * Asserts non-strict inequality (`!=`) of `actual` and `expected`.
+   *
+   *     assert.notEqual(3, 4, 'these numbers are not equal');
+   *
+   * @name notEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @api public
+   */
+
+  assert.notEqual = function (act, exp, msg) {
+    var test = new Assertion(act, msg);
+
+    test.assert(
+        exp != flag(test, 'object')
+      , 'expected #{this} to not equal #{exp}'
+      , 'expected #{this} to equal #{act}'
+      , exp
+      , act
+    );
+  };
+
+  /**
+   * ### .strictEqual(actual, expected, [message])
+   *
+   * Asserts strict equality (`===`) of `actual` and `expected`.
+   *
+   *     assert.strictEqual(true, true, 'these booleans are strictly equal');
+   *
+   * @name strictEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @api public
+   */
+
+  assert.strictEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.equal(exp);
+  };
+
+  /**
+   * ### .notStrictEqual(actual, expected, [message])
+   *
+   * Asserts strict inequality (`!==`) of `actual` and `expected`.
+   *
+   *     assert.notStrictEqual(3, '3', 'no coercion for strict equality');
+   *
+   * @name notStrictEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @api public
+   */
+
+  assert.notStrictEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.not.equal(exp);
+  };
+
+  /**
+   * ### .deepEqual(actual, expected, [message])
+   *
+   * Asserts that `actual` is deeply equal to `expected`.
+   *
+   *     assert.deepEqual({ tea: 'green' }, { tea: 'green' });
+   *
+   * @name deepEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @api public
+   */
+
+  assert.deepEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.eql(exp);
+  };
+
+  /**
+   * ### .notDeepEqual(actual, expected, [message])
+   *
+   * Assert that `actual` is not deeply equal to `expected`.
+   *
+   *     assert.notDeepEqual({ tea: 'green' }, { tea: 'jasmine' });
+   *
+   * @name notDeepEqual
+   * @param {Mixed} actual
+   * @param {Mixed} expected
+   * @param {String} message
+   * @api public
+   */
+
+  assert.notDeepEqual = function (act, exp, msg) {
+    new Assertion(act, msg).to.not.eql(exp);
+  };
+
+  /**
+   * ### .isTrue(value, [message])
+   *
+   * Asserts that `value` is true.
+   *
+   *     var teaServed = true;
+   *     assert.isTrue(teaServed, 'the tea has been served');
+   *
+   * @name isTrue
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isTrue = function (val, msg) {
+    new Assertion(val, msg).is['true'];
+  };
+
+  /**
+   * ### .isFalse(value, [message])
+   *
+   * Asserts that `value` is false.
+   *
+   *     var teaServed = false;
+   *     assert.isFalse(teaServed, 'no tea yet? hmm...');
+   *
+   * @name isFalse
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isFalse = function (val, msg) {
+    new Assertion(val, msg).is['false'];
+  };
+
+  /**
+   * ### .isNull(value, [message])
+   *
+   * Asserts that `value` is null.
+   *
+   *     assert.isNull(err, 'there was no error');
+   *
+   * @name isNull
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isNull = function (val, msg) {
+    new Assertion(val, msg).to.equal(null);
+  };
+
+  /**
+   * ### .isNotNull(value, [message])
+   *
+   * Asserts that `value` is not null.
+   *
+   *     var tea = 'tasty chai';
+   *     assert.isNotNull(tea, 'great, time for tea!');
+   *
+   * @name isNotNull
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isNotNull = function (val, msg) {
+    new Assertion(val, msg).to.not.equal(null);
+  };
+
+  /**
+   * ### .isUndefined(value, [message])
+   *
+   * Asserts that `value` is `undefined`.
+   *
+   *     var tea;
+   *     assert.isUndefined(tea, 'no tea defined');
+   *
+   * @name isUndefined
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isUndefined = function (val, msg) {
+    new Assertion(val, msg).to.equal(undefined);
+  };
+
+  /**
+   * ### .isDefined(value, [message])
+   *
+   * Asserts that `value` is not `undefined`.
+   *
+   *     var tea = 'cup of chai';
+   *     assert.isDefined(tea, 'tea has been defined');
+   *
+   * @name isDefined
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isDefined = function (val, msg) {
+    new Assertion(val, msg).to.not.equal(undefined);
+  };
+
+  /**
+   * ### .isFunction(value, [message])
+   *
+   * Asserts that `value` is a function.
+   *
+   *     function serveTea() { return 'cup of tea'; };
+   *     assert.isFunction(serveTea, 'great, we can have tea now');
+   *
+   * @name isFunction
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isFunction = function (val, msg) {
+    new Assertion(val, msg).to.be.a('function');
+  };
+
+  /**
+   * ### .isNotFunction(value, [message])
+   *
+   * Asserts that `value` is _not_ a function.
+   *
+   *     var serveTea = [ 'heat', 'pour', 'sip' ];
+   *     assert.isNotFunction(serveTea, 'great, we have listed the steps');
+   *
+   * @name isNotFunction
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isNotFunction = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('function');
+  };
+
+  /**
+   * ### .isObject(value, [message])
+   *
+   * Asserts that `value` is an object (as revealed by
+   * `Object.prototype.toString`).
+   *
+   *     var selection = { name: 'Chai', serve: 'with spices' };
+   *     assert.isObject(selection, 'tea selection is an object');
+   *
+   * @name isObject
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isObject = function (val, msg) {
+    new Assertion(val, msg).to.be.a('object');
+  };
+
+  /**
+   * ### .isNotObject(value, [message])
+   *
+   * Asserts that `value` is _not_ an object.
+   *
+   *     var selection = 'chai'
+   *     assert.isObject(selection, 'tea selection is not an object');
+   *     assert.isObject(null, 'null is not an object');
+   *
+   * @name isNotObject
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isNotObject = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('object');
+  };
+
+  /**
+   * ### .isArray(value, [message])
+   *
+   * Asserts that `value` is an array.
+   *
+   *     var menu = [ 'green', 'chai', 'oolong' ];
+   *     assert.isArray(menu, 'what kind of tea do we want?');
+   *
+   * @name isArray
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isArray = function (val, msg) {
+    new Assertion(val, msg).to.be.an('array');
+  };
+
+  /**
+   * ### .isNotArray(value, [message])
+   *
+   * Asserts that `value` is _not_ an array.
+   *
+   *     var menu = 'green|chai|oolong';
+   *     assert.isNotArray(menu, 'what kind of tea do we want?');
+   *
+   * @name isNotArray
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isNotArray = function (val, msg) {
+    new Assertion(val, msg).to.not.be.an('array');
+  };
+
+  /**
+   * ### .isString(value, [message])
+   *
+   * Asserts that `value` is a string.
+   *
+   *     var teaOrder = 'chai';
+   *     assert.isString(teaOrder, 'order placed');
+   *
+   * @name isString
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isString = function (val, msg) {
+    new Assertion(val, msg).to.be.a('string');
+  };
+
+  /**
+   * ### .isNotString(value, [message])
+   *
+   * Asserts that `value` is _not_ a string.
+   *
+   *     var teaOrder = 4;
+   *     assert.isNotString(teaOrder, 'order placed');
+   *
+   * @name isNotString
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isNotString = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('string');
+  };
+
+  /**
+   * ### .isNumber(value, [message])
+   *
+   * Asserts that `value` is a number.
+   *
+   *     var cups = 2;
+   *     assert.isNumber(cups, 'how many cups');
+   *
+   * @name isNumber
+   * @param {Number} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isNumber = function (val, msg) {
+    new Assertion(val, msg).to.be.a('number');
+  };
+
+  /**
+   * ### .isNotNumber(value, [message])
+   *
+   * Asserts that `value` is _not_ a number.
+   *
+   *     var cups = '2 cups please';
+   *     assert.isNotNumber(cups, 'how many cups');
+   *
+   * @name isNotNumber
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isNotNumber = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('number');
+  };
+
+  /**
+   * ### .isBoolean(value, [message])
+   *
+   * Asserts that `value` is a boolean.
+   *
+   *     var teaReady = true
+   *       , teaServed = false;
+   *
+   *     assert.isBoolean(teaReady, 'is the tea ready');
+   *     assert.isBoolean(teaServed, 'has tea been served');
+   *
+   * @name isBoolean
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isBoolean = function (val, msg) {
+    new Assertion(val, msg).to.be.a('boolean');
+  };
+
+  /**
+   * ### .isNotBoolean(value, [message])
+   *
+   * Asserts that `value` is _not_ a boolean.
+   *
+   *     var teaReady = 'yep'
+   *       , teaServed = 'nope';
+   *
+   *     assert.isNotBoolean(teaReady, 'is the tea ready');
+   *     assert.isNotBoolean(teaServed, 'has tea been served');
+   *
+   * @name isNotBoolean
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.isNotBoolean = function (val, msg) {
+    new Assertion(val, msg).to.not.be.a('boolean');
+  };
+
+  /**
+   * ### .typeOf(value, name, [message])
+   *
+   * Asserts that `value`'s type is `name`, as determined by
+   * `Object.prototype.toString`.
+   *
+   *     assert.typeOf({ tea: 'chai' }, 'object', 'we have an object');
+   *     assert.typeOf(['chai', 'jasmine'], 'array', 'we have an array');
+   *     assert.typeOf('tea', 'string', 'we have a string');
+   *     assert.typeOf(/tea/, 'regexp', 'we have a regular expression');
+   *     assert.typeOf(null, 'null', 'we have a null');
+   *     assert.typeOf(undefined, 'undefined', 'we have an undefined');
+   *
+   * @name typeOf
+   * @param {Mixed} value
+   * @param {String} name
+   * @param {String} message
+   * @api public
+   */
+
+  assert.typeOf = function (val, type, msg) {
+    new Assertion(val, msg).to.be.a(type);
+  };
+
+  /**
+   * ### .notTypeOf(value, name, [message])
+   *
+   * Asserts that `value`'s type is _not_ `name`, as determined by
+   * `Object.prototype.toString`.
+   *
+   *     assert.notTypeOf('tea', 'number', 'strings are not numbers');
+   *
+   * @name notTypeOf
+   * @param {Mixed} value
+   * @param {String} typeof name
+   * @param {String} message
+   * @api public
+   */
+
+  assert.notTypeOf = function (val, type, msg) {
+    new Assertion(val, msg).to.not.be.a(type);
+  };
+
+  /**
+   * ### .instanceOf(object, constructor, [message])
+   *
+   * Asserts that `value` is an instance of `constructor`.
+   *
+   *     var Tea = function (name) { this.name = name; }
+   *       , chai = new Tea('chai');
+   *
+   *     assert.instanceOf(chai, Tea, 'chai is an instance of tea');
+   *
+   * @name instanceOf
+   * @param {Object} object
+   * @param {Constructor} constructor
+   * @param {String} message
+   * @api public
+   */
+
+  assert.instanceOf = function (val, type, msg) {
+    new Assertion(val, msg).to.be.instanceOf(type);
+  };
+
+  /**
+   * ### .notInstanceOf(object, constructor, [message])
+   *
+   * Asserts `value` is not an instance of `constructor`.
+   *
+   *     var Tea = function (name) { this.name = name; }
+   *       , chai = new String('chai');
+   *
+   *     assert.notInstanceOf(chai, Tea, 'chai is not an instance of tea');
+   *
+   * @name notInstanceOf
+   * @param {Object} object
+   * @param {Constructor} constructor
+   * @param {String} message
+   * @api public
+   */
+
+  assert.notInstanceOf = function (val, type, msg) {
+    new Assertion(val, msg).to.not.be.instanceOf(type);
+  };
+
+  /**
+   * ### .include(haystack, needle, [message])
+   *
+   * Asserts that `haystack` includes `needle`. Works
+   * for strings and arrays.
+   *
+   *     assert.include('foobar', 'bar', 'foobar contains string "bar"');
+   *     assert.include([ 1, 2, 3 ], 3, 'array contains value');
+   *
+   * @name include
+   * @param {Array|String} haystack
+   * @param {Mixed} needle
+   * @param {String} message
+   * @api public
+   */
+
+  assert.include = function (exp, inc, msg) {
+    var obj = new Assertion(exp, msg);
+
+    if (Array.isArray(exp)) {
+      obj.to.include(inc);
+    } else if ('string' === typeof exp) {
+      obj.to.contain.string(inc);
+    } else {
+      throw new chai.AssertionError(
+          'expected an array or string'
+        , null
+        , assert.include
+      );
     }
-};
+  };
 
-var EventTarget = {
-    addEventListener: function addEventListener(event, listener, useCapture) {
-        this.eventListeners = this.eventListeners || {};
-        this.eventListeners[event] = this.eventListeners[event] || [];
-        this.eventListeners[event].push(listener);
-    },
+  /**
+   * ### .notInclude(haystack, needle, [message])
+   *
+   * Asserts that `haystack` does not include `needle`. Works
+   * for strings and arrays.
+   *i
+   *     assert.notInclude('foobar', 'baz', 'string not include substring');
+   *     assert.notInclude([ 1, 2, 3 ], 4, 'array not include contain value');
+   *
+   * @name notInclude
+   * @param {Array|String} haystack
+   * @param {Mixed} needle
+   * @param {String} message
+   * @api public
+   */
 
-    removeEventListener: function removeEventListener(event, listener, useCapture) {
-        var listeners = this.eventListeners && this.eventListeners[event] || [];
+  assert.notInclude = function (exp, inc, msg) {
+    var obj = new Assertion(exp, msg);
 
-        for (var i = 0, l = listeners.length; i < l; ++i) {
-            if (listeners[i] == listener) {
-                return listeners.splice(i, 1);
-            }
-        }
-    },
-
-    dispatchEvent: function dispatchEvent(event) {
-        var type = event.type;
-        var listeners = this.eventListeners && this.eventListeners[type] || [];
-
-        for (var i = 0; i < listeners.length; i++) {
-            if (typeof listeners[i] == "function") {
-                listeners[i].call(this, event);
-            } else {
-                listeners[i].handleEvent(event);
-            }
-        }
-
-        return !!event.defaultPrevented;
+    if (Array.isArray(exp)) {
+      obj.to.not.include(inc);
+    } else if ('string' === typeof exp) {
+      obj.to.not.contain.string(inc);
+    } else {
+      throw new chai.AssertionError(
+          'expected an array or string'
+        , null
+        , assert.notInclude
+      );
     }
+  };
+
+  /**
+   * ### .match(value, regexp, [message])
+   *
+   * Asserts that `value` matches the regular expression `regexp`.
+   *
+   *     assert.match('foobar', /^foo/, 'regexp matches');
+   *
+   * @name match
+   * @param {Mixed} value
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @api public
+   */
+
+  assert.match = function (exp, re, msg) {
+    new Assertion(exp, msg).to.match(re);
+  };
+
+  /**
+   * ### .notMatch(value, regexp, [message])
+   *
+   * Asserts that `value` does not match the regular expression `regexp`.
+   *
+   *     assert.notMatch('foobar', /^foo/, 'regexp does not match');
+   *
+   * @name notMatch
+   * @param {Mixed} value
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @api public
+   */
+
+  assert.notMatch = function (exp, re, msg) {
+    new Assertion(exp, msg).to.not.match(re);
+  };
+
+  /**
+   * ### .property(object, property, [message])
+   *
+   * Asserts that `object` has a property named by `property`.
+   *
+   *     assert.property({ tea: { green: 'matcha' }}, 'tea');
+   *
+   * @name property
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @api public
+   */
+
+  assert.property = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.have.property(prop);
+  };
+
+  /**
+   * ### .notProperty(object, property, [message])
+   *
+   * Asserts that `object` does _not_ have a property named by `property`.
+   *
+   *     assert.notProperty({ tea: { green: 'matcha' }}, 'coffee');
+   *
+   * @name notProperty
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @api public
+   */
+
+  assert.notProperty = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.not.have.property(prop);
+  };
+
+  /**
+   * ### .deepProperty(object, property, [message])
+   *
+   * Asserts that `object` has a property named by `property`, which can be a
+   * string using dot- and bracket-notation for deep reference.
+   *
+   *     assert.deepProperty({ tea: { green: 'matcha' }}, 'tea.green');
+   *
+   * @name deepProperty
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @api public
+   */
+
+  assert.deepProperty = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.have.deep.property(prop);
+  };
+
+  /**
+   * ### .notDeepProperty(object, property, [message])
+   *
+   * Asserts that `object` does _not_ have a property named by `property`, which
+   * can be a string using dot- and bracket-notation for deep reference.
+   *
+   *     assert.notDeepProperty({ tea: { green: 'matcha' }}, 'tea.oolong');
+   *
+   * @name notDeepProperty
+   * @param {Object} object
+   * @param {String} property
+   * @param {String} message
+   * @api public
+   */
+
+  assert.notDeepProperty = function (obj, prop, msg) {
+    new Assertion(obj, msg).to.not.have.deep.property(prop);
+  };
+
+  /**
+   * ### .propertyVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property` with value given
+   * by `value`.
+   *
+   *     assert.propertyVal({ tea: 'is good' }, 'tea', 'is good');
+   *
+   * @name propertyVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.propertyVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.have.property(prop, val);
+  };
+
+  /**
+   * ### .propertyNotVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property`, but with a value
+   * different from that given by `value`.
+   *
+   *     assert.propertyNotVal({ tea: 'is good' }, 'tea', 'is bad');
+   *
+   * @name propertyNotVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.propertyNotVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.not.have.property(prop, val);
+  };
+
+  /**
+   * ### .deepPropertyVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property` with value given
+   * by `value`. `property` can use dot- and bracket-notation for deep
+   * reference.
+   *
+   *     assert.deepPropertyVal({ tea: { green: 'matcha' }}, 'tea.green', 'matcha');
+   *
+   * @name deepPropertyVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.deepPropertyVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.have.deep.property(prop, val);
+  };
+
+  /**
+   * ### .deepPropertyNotVal(object, property, value, [message])
+   *
+   * Asserts that `object` has a property named by `property`, but with a value
+   * different from that given by `value`. `property` can use dot- and
+   * bracket-notation for deep reference.
+   *
+   *     assert.deepPropertyNotVal({ tea: { green: 'matcha' }}, 'tea.green', 'konacha');
+   *
+   * @name deepPropertyNotVal
+   * @param {Object} object
+   * @param {String} property
+   * @param {Mixed} value
+   * @param {String} message
+   * @api public
+   */
+
+  assert.deepPropertyNotVal = function (obj, prop, val, msg) {
+    new Assertion(obj, msg).to.not.have.deep.property(prop, val);
+  };
+
+  /**
+   * ### .lengthOf(object, length, [message])
+   *
+   * Asserts that `object` has a `length` property with the expected value.
+   *
+   *     assert.lengthOf([1,2,3], 3, 'array has length of 3');
+   *     assert.lengthOf('foobar', 5, 'string has length of 6');
+   *
+   * @name lengthOf
+   * @param {Mixed} object
+   * @param {Number} length
+   * @param {String} message
+   * @api public
+   */
+
+  assert.lengthOf = function (exp, len, msg) {
+    new Assertion(exp, msg).to.have.length(len);
+  };
+
+  /**
+   * ### .throws(function, [constructor/string/regexp], [string/regexp], [message])
+   *
+   * Asserts that `function` will throw an error that is an instance of
+   * `constructor`, or alternately that it will throw an error with message
+   * matching `regexp`.
+   *
+   *     assert.throw(fn, 'function throws a reference error');
+   *     assert.throw(fn, /function throws a reference error/);
+   *     assert.throw(fn, ReferenceError);
+   *     assert.throw(fn, ReferenceError, 'function throws a reference error');
+   *     assert.throw(fn, ReferenceError, /function throws a reference error/);
+   *
+   * @name throws
+   * @alias throw
+   * @alias Throw
+   * @param {Function} function
+   * @param {ErrorConstructor} constructor
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+   * @api public
+   */
+
+  assert.Throw = function (fn, errt, errs, msg) {
+    if ('string' === typeof errt || errt instanceof RegExp) {
+      errs = errt;
+      errt = null;
+    }
+
+    new Assertion(fn, msg).to.Throw(errt, errs);
+  };
+
+  /**
+   * ### .doesNotThrow(function, [constructor/regexp], [message])
+   *
+   * Asserts that `function` will _not_ throw an error that is an instance of
+   * `constructor`, or alternately that it will not throw an error with message
+   * matching `regexp`.
+   *
+   *     assert.doesNotThrow(fn, Error, 'function does not throw');
+   *
+   * @name doesNotThrow
+   * @param {Function} function
+   * @param {ErrorConstructor} constructor
+   * @param {RegExp} regexp
+   * @param {String} message
+   * @see https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Error#Error_types
+   * @api public
+   */
+
+  assert.doesNotThrow = function (fn, type, msg) {
+    if ('string' === typeof type) {
+      msg = type;
+      type = null;
+    }
+
+    new Assertion(fn, msg).to.not.Throw(type);
+  };
+
+  /**
+   * ### .operator(val1, operator, val2, [message])
+   *
+   * Compares two values using `operator`.
+   *
+   *     assert.operator(1, '<', 2, 'everything is ok');
+   *     assert.operator(1, '>', 2, 'this will fail');
+   *
+   * @name operator
+   * @param {Mixed} val1
+   * @param {String} operator
+   * @param {Mixed} val2
+   * @param {String} message
+   * @api public
+   */
+
+  assert.operator = function (val, operator, val2, msg) {
+    if (!~['==', '===', '>', '>=', '<', '<=', '!=', '!=='].indexOf(operator)) {
+      throw new Error('Invalid operator "' + operator + '"');
+    }
+    var test = new Assertion(eval(val + operator + val2), msg);
+    test.assert(
+        true === flag(test, 'object')
+      , 'expected ' + util.inspect(val) + ' to be ' + operator + ' ' + util.inspect(val2)
+      , 'expected ' + util.inspect(val) + ' to not be ' + operator + ' ' + util.inspect(val2) );
+  };
+
+  /**
+   * ### .closeTo(actual, expected, delta, [message])
+   *
+   * Asserts that the target is equal `expected`, to within a +/- `delta` range.
+   *
+   *     assert.closeTo(1.5, 1, 0.5, 'numbers are close');
+   *
+   * @name closeTo
+   * @param {Number} actual
+   * @param {Number} expected
+   * @param {Number} delta
+   * @param {String} message
+   * @api public
+   */
+
+  assert.closeTo = function (act, exp, delta, msg) {
+    new Assertion(act, msg).to.be.closeTo(exp, delta);
+  };
+
+  /**
+   * ### .sameMembers(set1, set2, [message])
+   *
+   * Asserts that `set1` and `set2` have the same members.
+   * Order is not taken into account.
+   *
+   *     assert.sameMembers([ 1, 2, 3 ], [ 2, 1, 3 ], 'same members');
+   *
+   * @name sameMembers
+   * @param {Array} superset
+   * @param {Array} subset
+   * @param {String} message
+   * @api public
+   */
+
+  assert.sameMembers = function (set1, set2, msg) {
+    new Assertion(set1, msg).to.have.same.members(set2);
+  }
+
+  /**
+   * ### .includeMembers(superset, subset, [message])
+   *
+   * Asserts that `subset` is included in `superset`.
+   * Order is not taken into account.
+   *
+   *     assert.includeMembers([ 1, 2, 3 ], [ 2, 1 ], 'include members');
+   *
+   * @name includeMembers
+   * @param {Array} superset
+   * @param {Array} subset
+   * @param {String} message
+   * @api public
+   */
+
+  assert.includeMembers = function (superset, subset, msg) {
+    new Assertion(superset, msg).to.include.members(subset);
+  }
+
+  /*!
+   * Undocumented / untested
+   */
+
+  assert.ifError = function (val, msg) {
+    new Assertion(val, msg).to.not.be.ok;
+  };
+
+  /*!
+   * Aliases.
+   */
+
+  (function alias(name, as){
+    assert[as] = assert[name];
+    return alias;
+  })
+  ('Throw', 'throw')
+  ('Throw', 'throws');
 };
 
-exports.Event = Event;
-exports.EventTarget = EventTarget;
-
-})()
 },{}],27:[function(require,module,exports){
 // shim for using process in browser
 
@@ -15919,7 +15919,193 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
+(function(process){if (!process.EventEmitter) process.EventEmitter = function () {};
+
+var EventEmitter = exports.EventEmitter = process.EventEmitter;
+var isArray = typeof Array.isArray === 'function'
+    ? Array.isArray
+    : function (xs) {
+        return Object.prototype.toString.call(xs) === '[object Array]'
+    }
+;
+function indexOf (xs, x) {
+    if (xs.indexOf) return xs.indexOf(x);
+    for (var i = 0; i < xs.length; i++) {
+        if (x === xs[i]) return i;
+    }
+    return -1;
+}
+
+// By default EventEmitters will print a warning if more than
+// 10 listeners are added to it. This is a useful default which
+// helps finding memory leaks.
+//
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+var defaultMaxListeners = 10;
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!this._events) this._events = {};
+  this._events.maxListeners = n;
+};
+
+
+EventEmitter.prototype.emit = function(type) {
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events || !this._events.error ||
+        (isArray(this._events.error) && !this._events.error.length))
+    {
+      if (arguments[1] instanceof Error) {
+        throw arguments[1]; // Unhandled 'error' event
+      } else {
+        throw new Error("Uncaught, unspecified 'error' event.");
+      }
+      return false;
+    }
+  }
+
+  if (!this._events) return false;
+  var handler = this._events[type];
+  if (!handler) return false;
+
+  if (typeof handler == 'function') {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        var args = Array.prototype.slice.call(arguments, 1);
+        handler.apply(this, args);
+    }
+    return true;
+
+  } else if (isArray(handler)) {
+    var args = Array.prototype.slice.call(arguments, 1);
+
+    var listeners = handler.slice();
+    for (var i = 0, l = listeners.length; i < l; i++) {
+      listeners[i].apply(this, args);
+    }
+    return true;
+
+  } else {
+    return false;
+  }
+};
+
+// EventEmitter is defined in src/node_events.cc
+// EventEmitter.prototype.emit() is also defined there.
+EventEmitter.prototype.addListener = function(type, listener) {
+  if ('function' !== typeof listener) {
+    throw new Error('addListener only takes instances of Function');
+  }
+
+  if (!this._events) this._events = {};
+
+  // To avoid recursion in the case that type == "newListeners"! Before
+  // adding it to the listeners, first emit "newListeners".
+  this.emit('newListener', type, listener);
+
+  if (!this._events[type]) {
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  } else if (isArray(this._events[type])) {
+
+    // Check for listener leak
+    if (!this._events[type].warned) {
+      var m;
+      if (this._events.maxListeners !== undefined) {
+        m = this._events.maxListeners;
+      } else {
+        m = defaultMaxListeners;
+      }
+
+      if (m && m > 0 && this._events[type].length > m) {
+        this._events[type].warned = true;
+        console.error('(node) warning: possible EventEmitter memory ' +
+                      'leak detected. %d listeners added. ' +
+                      'Use emitter.setMaxListeners() to increase limit.',
+                      this._events[type].length);
+        console.trace();
+      }
+    }
+
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  } else {
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  var self = this;
+  self.on(type, function g() {
+    self.removeListener(type, g);
+    listener.apply(this, arguments);
+  });
+
+  return this;
+};
+
+EventEmitter.prototype.removeListener = function(type, listener) {
+  if ('function' !== typeof listener) {
+    throw new Error('removeListener only takes instances of Function');
+  }
+
+  // does not use listeners(), so no side effect of creating _events[type]
+  if (!this._events || !this._events[type]) return this;
+
+  var list = this._events[type];
+
+  if (isArray(list)) {
+    var i = indexOf(list, listener);
+    if (i < 0) return this;
+    list.splice(i, 1);
+    if (list.length == 0)
+      delete this._events[type];
+  } else if (this._events[type] === listener) {
+    delete this._events[type];
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  if (arguments.length === 0) {
+    this._events = {};
+    return this;
+  }
+
+  // does not use listeners(), so no side effect of creating _events[type]
+  if (type && this._events && this._events[type]) this._events[type] = null;
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  if (!this._events) this._events = {};
+  if (!this._events[type]) this._events[type] = [];
+  if (!isArray(this._events[type])) {
+    this._events[type] = [this._events[type]];
+  }
+  return this._events[type];
+};
+
+})(require("__browserify_process"))
+},{"__browserify_process":27}],19:[function(require,module,exports){
 (function(process){/*jslint eqeqeq: false, onevar: false*/
 /*global module, require, process, setImmediate, setTimeout*/
 /**
@@ -16235,193 +16421,7 @@ for (var method in proto) {
 module.exports = proto;
 
 })(require("__browserify_process"))
-},{"./sinon":2,"__browserify_process":27}],21:[function(require,module,exports){
-(function(process){if (!process.EventEmitter) process.EventEmitter = function () {};
-
-var EventEmitter = exports.EventEmitter = process.EventEmitter;
-var isArray = typeof Array.isArray === 'function'
-    ? Array.isArray
-    : function (xs) {
-        return Object.prototype.toString.call(xs) === '[object Array]'
-    }
-;
-function indexOf (xs, x) {
-    if (xs.indexOf) return xs.indexOf(x);
-    for (var i = 0; i < xs.length; i++) {
-        if (x === xs[i]) return i;
-    }
-    return -1;
-}
-
-// By default EventEmitters will print a warning if more than
-// 10 listeners are added to it. This is a useful default which
-// helps finding memory leaks.
-//
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-var defaultMaxListeners = 10;
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!this._events) this._events = {};
-  this._events.maxListeners = n;
-};
-
-
-EventEmitter.prototype.emit = function(type) {
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events || !this._events.error ||
-        (isArray(this._events.error) && !this._events.error.length))
-    {
-      if (arguments[1] instanceof Error) {
-        throw arguments[1]; // Unhandled 'error' event
-      } else {
-        throw new Error("Uncaught, unspecified 'error' event.");
-      }
-      return false;
-    }
-  }
-
-  if (!this._events) return false;
-  var handler = this._events[type];
-  if (!handler) return false;
-
-  if (typeof handler == 'function') {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        var args = Array.prototype.slice.call(arguments, 1);
-        handler.apply(this, args);
-    }
-    return true;
-
-  } else if (isArray(handler)) {
-    var args = Array.prototype.slice.call(arguments, 1);
-
-    var listeners = handler.slice();
-    for (var i = 0, l = listeners.length; i < l; i++) {
-      listeners[i].apply(this, args);
-    }
-    return true;
-
-  } else {
-    return false;
-  }
-};
-
-// EventEmitter is defined in src/node_events.cc
-// EventEmitter.prototype.emit() is also defined there.
-EventEmitter.prototype.addListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('addListener only takes instances of Function');
-  }
-
-  if (!this._events) this._events = {};
-
-  // To avoid recursion in the case that type == "newListeners"! Before
-  // adding it to the listeners, first emit "newListeners".
-  this.emit('newListener', type, listener);
-
-  if (!this._events[type]) {
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  } else if (isArray(this._events[type])) {
-
-    // Check for listener leak
-    if (!this._events[type].warned) {
-      var m;
-      if (this._events.maxListeners !== undefined) {
-        m = this._events.maxListeners;
-      } else {
-        m = defaultMaxListeners;
-      }
-
-      if (m && m > 0 && this._events[type].length > m) {
-        this._events[type].warned = true;
-        console.error('(node) warning: possible EventEmitter memory ' +
-                      'leak detected. %d listeners added. ' +
-                      'Use emitter.setMaxListeners() to increase limit.',
-                      this._events[type].length);
-        console.trace();
-      }
-    }
-
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  } else {
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  var self = this;
-  self.on(type, function g() {
-    self.removeListener(type, g);
-    listener.apply(this, arguments);
-  });
-
-  return this;
-};
-
-EventEmitter.prototype.removeListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('removeListener only takes instances of Function');
-  }
-
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (!this._events || !this._events[type]) return this;
-
-  var list = this._events[type];
-
-  if (isArray(list)) {
-    var i = indexOf(list, listener);
-    if (i < 0) return this;
-    list.splice(i, 1);
-    if (list.length == 0)
-      delete this._events[type];
-  } else if (this._events[type] === listener) {
-    delete this._events[type];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  if (arguments.length === 0) {
-    this._events = {};
-    return this;
-  }
-
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (type && this._events && this._events[type]) this._events[type] = null;
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  if (!this._events) this._events = {};
-  if (!this._events[type]) this._events[type] = [];
-  if (!isArray(this._events[type])) {
-    this._events[type] = [this._events[type]];
-  }
-  return this._events[type];
-};
-
-})(require("__browserify_process"))
-},{"__browserify_process":27}],1:[function(require,module,exports){
+},{"./sinon":1,"__browserify_process":27}],17:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2013 Jake Luer <jake@alogicalparadox.com>
@@ -16503,7 +16503,7 @@ exports.use(should);
 var assert = require('./chai/interface/assert');
 exports.use(assert);
 
-},{"./chai/assertion":24,"./chai/core/assertions":25,"./chai/interface/expect":22,"./chai/interface/should":26,"./chai/interface/assert":23,"./chai/utils":28,"assertion-error":29}],30:[function(require,module,exports){
+},{"./chai/assertion":22,"./chai/core/assertions":23,"./chai/interface/expect":24,"./chai/interface/should":25,"./chai/interface/assert":26,"./chai/utils":28,"assertion-error":29}],30:[function(require,module,exports){
 /*!
  * Chai - type utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -16552,6 +16552,27 @@ module.exports = function (obj) {
 
 },{}],31:[function(require,module,exports){
 /*!
+ * Chai - getActual utility
+ * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/**
+ * # getActual(object, [actual])
+ *
+ * Returns the `actual` value for an Assertion
+ *
+ * @param {Object} object (constructed Assertion)
+ * @param {Arguments} chai.Assertion.prototype.assert arguments
+ */
+
+module.exports = function (obj, args) {
+  var actual = args[4];
+  return 'undefined' !== typeof actual ? actual : obj._obj;
+};
+
+},{}],32:[function(require,module,exports){
+/*!
  * Chai - flag utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
  * MIT Licensed
@@ -16584,7 +16605,7 @@ module.exports = function (obj, key, value) {
   }
 };
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /*!
  * Chai - transferFlags utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -16630,7 +16651,7 @@ module.exports = function (assertion, object, includeAll) {
   }
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /*!
  * Chai - getPathValue utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -16734,7 +16755,7 @@ function _getPathValue (parsed, obj) {
   return res;
 };
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 /*!
  * Chai - getName utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -16756,7 +16777,7 @@ module.exports = function (func) {
   return match && match[1] ? match[1] : "";
 };
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 /*!
  * Chai - addProperty utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -16798,7 +16819,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /*!
  * Chai - addMethod utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -16835,27 +16856,6 @@ module.exports = function (ctx, name, method) {
     var result = method.apply(this, arguments);
     return result === undefined ? this : result;
   };
-};
-
-},{}],37:[function(require,module,exports){
-/*!
- * Chai - getActual utility
- * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/**
- * # getActual(object, [actual])
- *
- * Returns the `actual` value for an Assertion
- *
- * @param {Object} object (constructed Assertion)
- * @param {Arguments} chai.Assertion.prototype.assert arguments
- */
-
-module.exports = function (obj, args) {
-  var actual = args[4];
-  return 'undefined' !== typeof actual ? actual : obj._obj;
 };
 
 },{}],38:[function(require,module,exports){
@@ -16967,119 +16967,35 @@ module.exports = function (ctx, name, method) {
   }
 };
 
-},{}],29:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /*!
- * assertion-error
- * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
+ * Chai - test utility
+ * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
  * MIT Licensed
  */
 
 /*!
- * Return a function that will copy properties from
- * one object to another excluding any originally
- * listed. Returned function will create a new `{}`.
- *
- * @param {String} excluded properties ...
- * @return {Function}
+ * Module dependancies
  */
 
-function exclude () {
-  var excludes = [].slice.call(arguments);
-
-  function excludeProps (res, obj) {
-    Object.keys(obj).forEach(function (key) {
-      if (!~excludes.indexOf(key)) res[key] = obj[key];
-    });
-  }
-
-  return function extendExclude () {
-    var args = [].slice.call(arguments)
-      , i = 0
-      , res = {};
-
-    for (; i < args.length; i++) {
-      excludeProps(res, args[i]);
-    }
-
-    return res;
-  };
-};
-
-/*!
- * Primary Exports
- */
-
-module.exports = AssertionError;
+var flag = require('./flag');
 
 /**
- * ### AssertionError
+ * # test(object, expression)
  *
- * An extension of the JavaScript `Error` constructor for
- * assertion and validation scenarios.
+ * Test and object for expression.
  *
- * @param {String} message
- * @param {Object} properties to include (optional)
- * @param {callee} start stack function (optional)
+ * @param {Object} object (constructed Assertion)
+ * @param {Arguments} chai.Assertion.prototype.assert arguments
  */
 
-function AssertionError (message, _props, ssf) {
-  var extend = exclude('name', 'message', 'stack', 'constructor', 'toJSON')
-    , props = extend(_props || {});
-
-  // default values
-  this.message = message || 'Unspecified AssertionError';
-  this.showDiff = false;
-
-  // copy from properties
-  for (var key in props) {
-    this[key] = props[key];
-  }
-
-  // capture stack trace
-  ssf = ssf || arguments.callee;
-  if (ssf && Error.captureStackTrace) {
-    Error.captureStackTrace(this, ssf);
-  }
-}
-
-/*!
- * Inherit from Error.prototype
- */
-
-AssertionError.prototype = Object.create(Error.prototype);
-
-/*!
- * Statically set name
- */
-
-AssertionError.prototype.name = 'AssertionError';
-
-/*!
- * Ensure correct constructor
- */
-
-AssertionError.prototype.constructor = AssertionError;
-
-/**
- * Allow errors to be converted to JSON for static transfer.
- *
- * @param {Boolean} include stack (default: `true`)
- * @return {Object} object that can be `JSON.stringify`
- */
-
-AssertionError.prototype.toJSON = function (stack) {
-  var extend = exclude('constructor', 'toJSON', 'stack')
-    , props = extend({ name: this.name }, this);
-
-  // include stack if exists and not turned off
-  if (false !== stack && this.stack) {
-    props.stack = this.stack;
-  }
-
-  return props;
+module.exports = function (obj, args) {
+  var negate = flag(obj, 'negate')
+    , expr = args[0];
+  return negate ? !expr : expr;
 };
 
-},{}],40:[function(require,module,exports){
+},{"./flag":32}],41:[function(require,module,exports){
 /*!
  * Chai - message composition utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -17130,7 +17046,7 @@ module.exports = function (obj, args) {
   return flagMsg ? flagMsg + ': ' + msg : msg;
 };
 
-},{"./flag":31,"./getActual":37,"./inspect":41,"./objDisplay":42}],41:[function(require,module,exports){
+},{"./flag":32,"./getActual":31,"./inspect":42,"./objDisplay":43}],42:[function(require,module,exports){
 // This is (almost) directly from Node.js utils
 // https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
 
@@ -17452,7 +17368,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-},{"./getName":34,"./getProperties":43,"./getEnumerableProperties":44}],42:[function(require,module,exports){
+},{"./getName":35,"./getProperties":44,"./getEnumerableProperties":45}],43:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -17502,35 +17418,7 @@ module.exports = function (obj) {
   }
 };
 
-},{"./inspect":41}],45:[function(require,module,exports){
-/*!
- * Chai - test utility
- * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Module dependancies
- */
-
-var flag = require('./flag');
-
-/**
- * # test(object, expression)
- *
- * Test and object for expression.
- *
- * @param {Object} object (constructed Assertion)
- * @param {Arguments} chai.Assertion.prototype.assert arguments
- */
-
-module.exports = function (obj, args) {
-  var negate = flag(obj, 'negate')
-    , expr = args[0];
-  return negate ? !expr : expr;
-};
-
-},{"./flag":31}],46:[function(require,module,exports){
+},{"./inspect":42}],46:[function(require,module,exports){
 /*!
  * Chai - addChainingMethod utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -17626,7 +17514,119 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   });
 };
 
-},{"./transferFlags":32}],43:[function(require,module,exports){
+},{"./transferFlags":33}],29:[function(require,module,exports){
+/*!
+ * assertion-error
+ * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Return a function that will copy properties from
+ * one object to another excluding any originally
+ * listed. Returned function will create a new `{}`.
+ *
+ * @param {String} excluded properties ...
+ * @return {Function}
+ */
+
+function exclude () {
+  var excludes = [].slice.call(arguments);
+
+  function excludeProps (res, obj) {
+    Object.keys(obj).forEach(function (key) {
+      if (!~excludes.indexOf(key)) res[key] = obj[key];
+    });
+  }
+
+  return function extendExclude () {
+    var args = [].slice.call(arguments)
+      , i = 0
+      , res = {};
+
+    for (; i < args.length; i++) {
+      excludeProps(res, args[i]);
+    }
+
+    return res;
+  };
+};
+
+/*!
+ * Primary Exports
+ */
+
+module.exports = AssertionError;
+
+/**
+ * ### AssertionError
+ *
+ * An extension of the JavaScript `Error` constructor for
+ * assertion and validation scenarios.
+ *
+ * @param {String} message
+ * @param {Object} properties to include (optional)
+ * @param {callee} start stack function (optional)
+ */
+
+function AssertionError (message, _props, ssf) {
+  var extend = exclude('name', 'message', 'stack', 'constructor', 'toJSON')
+    , props = extend(_props || {});
+
+  // default values
+  this.message = message || 'Unspecified AssertionError';
+  this.showDiff = false;
+
+  // copy from properties
+  for (var key in props) {
+    this[key] = props[key];
+  }
+
+  // capture stack trace
+  ssf = ssf || arguments.callee;
+  if (ssf && Error.captureStackTrace) {
+    Error.captureStackTrace(this, ssf);
+  }
+}
+
+/*!
+ * Inherit from Error.prototype
+ */
+
+AssertionError.prototype = Object.create(Error.prototype);
+
+/*!
+ * Statically set name
+ */
+
+AssertionError.prototype.name = 'AssertionError';
+
+/*!
+ * Ensure correct constructor
+ */
+
+AssertionError.prototype.constructor = AssertionError;
+
+/**
+ * Allow errors to be converted to JSON for static transfer.
+ *
+ * @param {Boolean} include stack (default: `true`)
+ * @return {Object} object that can be `JSON.stringify`
+ */
+
+AssertionError.prototype.toJSON = function (stack) {
+  var extend = exclude('constructor', 'toJSON', 'stack')
+    , props = extend({ name: this.name }, this);
+
+  // include stack if exists and not turned off
+  if (false !== stack && this.stack) {
+    props.stack = this.stack;
+  }
+
+  return props;
+};
+
+},{}],44:[function(require,module,exports){
 /*!
  * Chai - getProperties utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -17663,7 +17663,7 @@ module.exports = function getProperties(object) {
   return result;
 };
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 /*!
  * Chai - getEnumerableProperties utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -17800,7 +17800,7 @@ exports.overwriteMethod = require('./overwriteMethod');
 exports.addChainableMethod = require('./addChainableMethod');
 
 
-},{"./type":30,"./test":45,"./getMessage":40,"./inspect":41,"./objDisplay":42,"./getActual":37,"./flag":31,"./transferFlags":32,"./getPathValue":33,"./getName":34,"./addProperty":35,"./addMethod":36,"./overwriteProperty":38,"./overwriteMethod":39,"./addChainableMethod":46,"deep-eql":47}],47:[function(require,module,exports){
+},{"./test":40,"./type":30,"./getActual":31,"./getMessage":41,"./inspect":42,"./objDisplay":43,"./flag":32,"./transferFlags":33,"./getPathValue":34,"./getName":35,"./addProperty":36,"./addMethod":37,"./overwriteProperty":38,"./overwriteMethod":39,"./addChainableMethod":46,"deep-eql":47}],47:[function(require,module,exports){
 module.exports = require('./lib/eql');
 
 },{"./lib/eql":48}],49:[function(require,module,exports){
@@ -19491,93 +19491,7 @@ SlowBuffer.prototype.writeDoubleLE = Buffer.prototype.writeDoubleLE;
 SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 
 })()
-},{"assert":49,"./buffer_ieee754":51,"base64-js":52}],52:[function(require,module,exports){
-(function (exports) {
-	'use strict';
-
-	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
-	function b64ToByteArray(b64) {
-		var i, j, l, tmp, placeHolders, arr;
-	
-		if (b64.length % 4 > 0) {
-			throw 'Invalid string. Length must be a multiple of 4';
-		}
-
-		// the number of equal signs (place holders)
-		// if there are two placeholders, than the two characters before it
-		// represent one byte
-		// if there is only one, then the three characters before it represent 2 bytes
-		// this is just a cheap hack to not do indexOf twice
-		placeHolders = b64.indexOf('=');
-		placeHolders = placeHolders > 0 ? b64.length - placeHolders : 0;
-
-		// base64 is 4/3 + up to two characters of the original data
-		arr = [];//new Uint8Array(b64.length * 3 / 4 - placeHolders);
-
-		// if there are placeholders, only get up to the last complete 4 chars
-		l = placeHolders > 0 ? b64.length - 4 : b64.length;
-
-		for (i = 0, j = 0; i < l; i += 4, j += 3) {
-			tmp = (lookup.indexOf(b64[i]) << 18) | (lookup.indexOf(b64[i + 1]) << 12) | (lookup.indexOf(b64[i + 2]) << 6) | lookup.indexOf(b64[i + 3]);
-			arr.push((tmp & 0xFF0000) >> 16);
-			arr.push((tmp & 0xFF00) >> 8);
-			arr.push(tmp & 0xFF);
-		}
-
-		if (placeHolders === 2) {
-			tmp = (lookup.indexOf(b64[i]) << 2) | (lookup.indexOf(b64[i + 1]) >> 4);
-			arr.push(tmp & 0xFF);
-		} else if (placeHolders === 1) {
-			tmp = (lookup.indexOf(b64[i]) << 10) | (lookup.indexOf(b64[i + 1]) << 4) | (lookup.indexOf(b64[i + 2]) >> 2);
-			arr.push((tmp >> 8) & 0xFF);
-			arr.push(tmp & 0xFF);
-		}
-
-		return arr;
-	}
-
-	function uint8ToBase64(uint8) {
-		var i,
-			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
-			output = "",
-			temp, length;
-
-		function tripletToBase64 (num) {
-			return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F];
-		};
-
-		// go through the array every three bytes, we'll deal with trailing stuff later
-		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
-			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
-			output += tripletToBase64(temp);
-		}
-
-		// pad the end with zeros, but make sure to not forget the extra bytes
-		switch (extraBytes) {
-			case 1:
-				temp = uint8[uint8.length - 1];
-				output += lookup[temp >> 2];
-				output += lookup[(temp << 4) & 0x3F];
-				output += '==';
-				break;
-			case 2:
-				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1]);
-				output += lookup[temp >> 10];
-				output += lookup[(temp >> 4) & 0x3F];
-				output += lookup[(temp << 2) & 0x3F];
-				output += '=';
-				break;
-		}
-
-		return output;
-	}
-
-	module.exports.toByteArray = b64ToByteArray;
-	module.exports.fromByteArray = uint8ToBase64;
-}());
-
-},{}],48:[function(require,module,exports){
+},{"assert":49,"./buffer_ieee754":51,"base64-js":52}],48:[function(require,module,exports){
 (function(){/*!
  * deep-eql
  * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
@@ -19837,7 +19751,93 @@ function objectEqual(a, b, m) {
 }
 
 })()
-},{"buffer":50,"type-detect":53}],53:[function(require,module,exports){
+},{"buffer":50,"type-detect":53}],52:[function(require,module,exports){
+(function (exports) {
+	'use strict';
+
+	var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+	function b64ToByteArray(b64) {
+		var i, j, l, tmp, placeHolders, arr;
+	
+		if (b64.length % 4 > 0) {
+			throw 'Invalid string. Length must be a multiple of 4';
+		}
+
+		// the number of equal signs (place holders)
+		// if there are two placeholders, than the two characters before it
+		// represent one byte
+		// if there is only one, then the three characters before it represent 2 bytes
+		// this is just a cheap hack to not do indexOf twice
+		placeHolders = b64.indexOf('=');
+		placeHolders = placeHolders > 0 ? b64.length - placeHolders : 0;
+
+		// base64 is 4/3 + up to two characters of the original data
+		arr = [];//new Uint8Array(b64.length * 3 / 4 - placeHolders);
+
+		// if there are placeholders, only get up to the last complete 4 chars
+		l = placeHolders > 0 ? b64.length - 4 : b64.length;
+
+		for (i = 0, j = 0; i < l; i += 4, j += 3) {
+			tmp = (lookup.indexOf(b64[i]) << 18) | (lookup.indexOf(b64[i + 1]) << 12) | (lookup.indexOf(b64[i + 2]) << 6) | lookup.indexOf(b64[i + 3]);
+			arr.push((tmp & 0xFF0000) >> 16);
+			arr.push((tmp & 0xFF00) >> 8);
+			arr.push(tmp & 0xFF);
+		}
+
+		if (placeHolders === 2) {
+			tmp = (lookup.indexOf(b64[i]) << 2) | (lookup.indexOf(b64[i + 1]) >> 4);
+			arr.push(tmp & 0xFF);
+		} else if (placeHolders === 1) {
+			tmp = (lookup.indexOf(b64[i]) << 10) | (lookup.indexOf(b64[i + 1]) << 4) | (lookup.indexOf(b64[i + 2]) >> 2);
+			arr.push((tmp >> 8) & 0xFF);
+			arr.push(tmp & 0xFF);
+		}
+
+		return arr;
+	}
+
+	function uint8ToBase64(uint8) {
+		var i,
+			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
+			output = "",
+			temp, length;
+
+		function tripletToBase64 (num) {
+			return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F];
+		};
+
+		// go through the array every three bytes, we'll deal with trailing stuff later
+		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
+			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
+			output += tripletToBase64(temp);
+		}
+
+		// pad the end with zeros, but make sure to not forget the extra bytes
+		switch (extraBytes) {
+			case 1:
+				temp = uint8[uint8.length - 1];
+				output += lookup[temp >> 2];
+				output += lookup[(temp << 4) & 0x3F];
+				output += '==';
+				break;
+			case 2:
+				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1]);
+				output += lookup[temp >> 10];
+				output += lookup[(temp >> 4) & 0x3F];
+				output += lookup[(temp << 2) & 0x3F];
+				output += '=';
+				break;
+		}
+
+		return output;
+	}
+
+	module.exports.toByteArray = b64ToByteArray;
+	module.exports.fromByteArray = uint8ToBase64;
+}());
+
+},{}],53:[function(require,module,exports){
 module.exports = require('./lib/type');
 
 },{"./lib/type":54}],54:[function(require,module,exports){
@@ -25843,7 +25843,7 @@ AbecedaryReporter.prototype = new F;
 AbecedaryReporter.prototype.constructor = AbecedaryReporter
 
 mocha.globals(['code']);
-mocha.setup({ ui: 'bdd',
-              reporter: AbecedaryReporter, 
-              ignoreLeaks: false
-            });
+
+window.parent.stuffEmit('loaded');
+
+this.mocha.setup({ reporter: AbecedaryReporter });

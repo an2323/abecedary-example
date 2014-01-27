@@ -1838,159 +1838,7 @@ sinon.extend(stub, (function () {
 module.exports = stub;
 
 })()
-},{"./sinon":1,"./spy":2,"./behavior":19}],6:[function(require,module,exports){
-(function(){/*jslint eqeqeq: false, onevar: false, nomen: false*/
-/*global module, require*/
-/**
- * Mock functions.
- *
- * @author Christian Johansen (christian@cjohansen.no)
- * @license BSD
- *
- * Copyright (c) 2010-2013 Christian Johansen
- */
-"use strict";
-
-var sinon = require("./sinon");
-var match = require("./match");
-var spy = require("./spy");
-
-function each(collection, callback) {
-    if (!collection) {
-        return;
-    }
-
-    for (var i = 0, l = collection.length; i < l; i += 1) {
-        callback(collection[i]);
-    }
-}
-
-module.exports = function (expectation) {
-
-    function mock(object) {
-        if (!object) {
-            return expectation.create("Anonymous mock");
-        }
-
-        return mock.create(object);
-    }
-
-    return sinon.extend(mock, {
-
-        create: function create(object) {
-            if (!object) {
-                throw new TypeError("object is null");
-            }
-
-            var mockObject = sinon.extend({}, mock);
-            mockObject.object = object;
-            delete mockObject.create;
-
-            return mockObject;
-        },
-
-        expects: function expects(method) {
-            if (!method) {
-                throw new TypeError("method is falsy");
-            }
-
-            if (!this.expectations) {
-                this.expectations = {};
-                this.proxies = [];
-            }
-
-            if (!this.expectations[method]) {
-                this.expectations[method] = [];
-                var mockObject = this;
-
-                sinon.wrapMethod(this.object, method, function () {
-                    return mockObject.invokeMethod(method, this, arguments);
-                });
-
-                this.proxies.push(method);
-            }
-
-            var exp = expectation.create(method);
-            this.expectations[method].push(exp);
-
-            return exp;
-        },
-
-        restore: function restore() {
-            var object = this.object;
-
-            each(this.proxies, function (proxy) {
-                if (typeof object[proxy].restore == "function") {
-                    object[proxy].restore();
-                }
-            });
-        },
-
-        verify: function verify() {
-            var expectations = this.expectations || {};
-            var messages = [], met = [];
-
-            each(this.proxies, function (proxy) {
-                each(expectations[proxy], function (expectation) {
-                    if (!expectation.met()) {
-                        messages.push(expectation.toString());
-                    } else {
-                        met.push(expectation.toString());
-                    }
-                });
-            });
-
-            this.restore();
-
-            if (messages.length > 0) {
-                expectation.fail(messages.concat(met).join("\n"));
-            } else {
-                expectation.pass(messages.concat(met).join("\n"));
-            }
-
-            return true;
-        },
-
-        invokeMethod: function invokeMethod(method, thisValue, args) {
-            var expectations = this.expectations && this.expectations[method];
-            var length = expectations && expectations.length || 0, i;
-
-            for (i = 0; i < length; i += 1) {
-                if (!expectations[i].met() &&
-                    expectations[i].allowsCall(thisValue, args)) {
-                    return expectations[i].apply(thisValue, args);
-                }
-            }
-
-            var messages = [], available, exhausted = 0;
-
-            for (i = 0; i < length; i += 1) {
-                if (expectations[i].allowsCall(thisValue, args)) {
-                    available = available || expectations[i];
-                } else {
-                    exhausted += 1;
-                }
-                messages.push("    " + expectations[i].toString());
-            }
-
-            if (exhausted === 0) {
-                return available.apply(thisValue, args);
-            }
-
-            messages.unshift("Unexpected call: " + spy.spyCall.toString.call({
-                proxy: method,
-                args: args
-            }));
-
-            expectation.fail(messages.join("\n"));
-        }
-
-    });
-
-};
-
-})()
-},{"./sinon":1,"./match":8,"./spy":2}],7:[function(require,module,exports){
+},{"./sinon":1,"./spy":2,"./behavior":19}],7:[function(require,module,exports){
 (function(global){/*jslint eqeqeq: false, onevar: false, nomen: false, plusplus: false*/
 /*global module, require*/
 /**
@@ -2160,7 +2008,159 @@ mirrorPropAsAssertion("alwaysThrew", "%n did not always throw exception%C");
 module.exports = assert;
 
 })(window)
-},{"./sinon":1}],8:[function(require,module,exports){
+},{"./sinon":1}],6:[function(require,module,exports){
+(function(){/*jslint eqeqeq: false, onevar: false, nomen: false*/
+/*global module, require*/
+/**
+ * Mock functions.
+ *
+ * @author Christian Johansen (christian@cjohansen.no)
+ * @license BSD
+ *
+ * Copyright (c) 2010-2013 Christian Johansen
+ */
+"use strict";
+
+var sinon = require("./sinon");
+var match = require("./match");
+var spy = require("./spy");
+
+function each(collection, callback) {
+    if (!collection) {
+        return;
+    }
+
+    for (var i = 0, l = collection.length; i < l; i += 1) {
+        callback(collection[i]);
+    }
+}
+
+module.exports = function (expectation) {
+
+    function mock(object) {
+        if (!object) {
+            return expectation.create("Anonymous mock");
+        }
+
+        return mock.create(object);
+    }
+
+    return sinon.extend(mock, {
+
+        create: function create(object) {
+            if (!object) {
+                throw new TypeError("object is null");
+            }
+
+            var mockObject = sinon.extend({}, mock);
+            mockObject.object = object;
+            delete mockObject.create;
+
+            return mockObject;
+        },
+
+        expects: function expects(method) {
+            if (!method) {
+                throw new TypeError("method is falsy");
+            }
+
+            if (!this.expectations) {
+                this.expectations = {};
+                this.proxies = [];
+            }
+
+            if (!this.expectations[method]) {
+                this.expectations[method] = [];
+                var mockObject = this;
+
+                sinon.wrapMethod(this.object, method, function () {
+                    return mockObject.invokeMethod(method, this, arguments);
+                });
+
+                this.proxies.push(method);
+            }
+
+            var exp = expectation.create(method);
+            this.expectations[method].push(exp);
+
+            return exp;
+        },
+
+        restore: function restore() {
+            var object = this.object;
+
+            each(this.proxies, function (proxy) {
+                if (typeof object[proxy].restore == "function") {
+                    object[proxy].restore();
+                }
+            });
+        },
+
+        verify: function verify() {
+            var expectations = this.expectations || {};
+            var messages = [], met = [];
+
+            each(this.proxies, function (proxy) {
+                each(expectations[proxy], function (expectation) {
+                    if (!expectation.met()) {
+                        messages.push(expectation.toString());
+                    } else {
+                        met.push(expectation.toString());
+                    }
+                });
+            });
+
+            this.restore();
+
+            if (messages.length > 0) {
+                expectation.fail(messages.concat(met).join("\n"));
+            } else {
+                expectation.pass(messages.concat(met).join("\n"));
+            }
+
+            return true;
+        },
+
+        invokeMethod: function invokeMethod(method, thisValue, args) {
+            var expectations = this.expectations && this.expectations[method];
+            var length = expectations && expectations.length || 0, i;
+
+            for (i = 0; i < length; i += 1) {
+                if (!expectations[i].met() &&
+                    expectations[i].allowsCall(thisValue, args)) {
+                    return expectations[i].apply(thisValue, args);
+                }
+            }
+
+            var messages = [], available, exhausted = 0;
+
+            for (i = 0; i < length; i += 1) {
+                if (expectations[i].allowsCall(thisValue, args)) {
+                    available = available || expectations[i];
+                } else {
+                    exhausted += 1;
+                }
+                messages.push("    " + expectations[i].toString());
+            }
+
+            if (exhausted === 0) {
+                return available.apply(thisValue, args);
+            }
+
+            messages.unshift("Unexpected call: " + spy.spyCall.toString.call({
+                proxy: method,
+                args: args
+            }));
+
+            expectation.fail(messages.join("\n"));
+        }
+
+    });
+
+};
+
+})()
+},{"./sinon":1,"./match":8,"./spy":2}],8:[function(require,module,exports){
 (function(){/*jslint eqeqeq: false, onevar: false, plusplus: false*/
 /*global module, require*/
 /**
@@ -7660,6 +7660,56 @@ module.exports = function (obj, args) {
 
 },{"./flag":32}],41:[function(require,module,exports){
 /*!
+ * Chai - flag utility
+ * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+
+/*!
+ * Module dependancies
+ */
+
+var inspect = require('./inspect');
+
+/**
+ * ### .objDisplay (object)
+ *
+ * Determines if an object or an array matches
+ * criteria to be inspected in-line for error
+ * messages or should be truncated.
+ *
+ * @param {Mixed} javascript object to inspect
+ * @name objDisplay
+ * @api public
+ */
+
+module.exports = function (obj) {
+  var str = inspect(obj)
+    , type = Object.prototype.toString.call(obj);
+
+  if (str.length >= 40) {
+    if (type === '[object Function]') {
+      return !obj.name || obj.name === ''
+        ? '[Function]'
+        : '[Function: ' + obj.name + ']';
+    } else if (type === '[object Array]') {
+      return '[ Array(' + obj.length + ') ]';
+    } else if (type === '[object Object]') {
+      var keys = Object.keys(obj)
+        , kstr = keys.length > 2
+          ? keys.splice(0, 2).join(', ') + ', ...'
+          : keys.join(', ');
+      return '{ Object (' + kstr + ') }';
+    } else {
+      return str;
+    }
+  } else {
+    return str;
+  }
+};
+
+},{"./inspect":42}],43:[function(require,module,exports){
+/*!
  * Chai - message composition utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
  * MIT Licensed
@@ -7709,7 +7759,7 @@ module.exports = function (obj, args) {
   return flagMsg ? flagMsg + ': ' + msg : msg;
 };
 
-},{"./flag":32,"./getActual":31,"./inspect":42,"./objDisplay":43}],42:[function(require,module,exports){
+},{"./flag":32,"./getActual":31,"./inspect":42,"./objDisplay":41}],42:[function(require,module,exports){
 // This is (almost) directly from Node.js utils
 // https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
 
@@ -8031,57 +8081,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-},{"./getName":35,"./getProperties":44,"./getEnumerableProperties":45}],43:[function(require,module,exports){
-/*!
- * Chai - flag utility
- * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
- * MIT Licensed
- */
-
-/*!
- * Module dependancies
- */
-
-var inspect = require('./inspect');
-
-/**
- * ### .objDisplay (object)
- *
- * Determines if an object or an array matches
- * criteria to be inspected in-line for error
- * messages or should be truncated.
- *
- * @param {Mixed} javascript object to inspect
- * @name objDisplay
- * @api public
- */
-
-module.exports = function (obj) {
-  var str = inspect(obj)
-    , type = Object.prototype.toString.call(obj);
-
-  if (str.length >= 40) {
-    if (type === '[object Function]') {
-      return !obj.name || obj.name === ''
-        ? '[Function]'
-        : '[Function: ' + obj.name + ']';
-    } else if (type === '[object Array]') {
-      return '[ Array(' + obj.length + ') ]';
-    } else if (type === '[object Object]') {
-      var keys = Object.keys(obj)
-        , kstr = keys.length > 2
-          ? keys.splice(0, 2).join(', ') + ', ...'
-          : keys.join(', ');
-      return '{ Object (' + kstr + ') }';
-    } else {
-      return str;
-    }
-  } else {
-    return str;
-  }
-};
-
-},{"./inspect":42}],46:[function(require,module,exports){
+},{"./getName":35,"./getProperties":44,"./getEnumerableProperties":45}],46:[function(require,module,exports){
 /*!
  * Chai - addChainingMethod utility
  * Copyright(c) 2012-2013 Jake Luer <jake@alogicalparadox.com>
@@ -8463,7 +8463,7 @@ exports.overwriteMethod = require('./overwriteMethod');
 exports.addChainableMethod = require('./addChainableMethod');
 
 
-},{"./test":40,"./type":30,"./getMessage":41,"./getActual":31,"./inspect":42,"./objDisplay":43,"./flag":32,"./transferFlags":33,"./getPathValue":34,"./getName":35,"./addProperty":36,"./addMethod":37,"./overwriteProperty":38,"./overwriteMethod":39,"./addChainableMethod":46,"deep-eql":47}],47:[function(require,module,exports){
+},{"./test":40,"./type":30,"./getMessage":43,"./getActual":31,"./inspect":42,"./objDisplay":41,"./flag":32,"./transferFlags":33,"./getPathValue":34,"./getName":35,"./addProperty":36,"./addMethod":37,"./overwriteProperty":38,"./overwriteMethod":39,"./addChainableMethod":46,"deep-eql":47}],47:[function(require,module,exports){
 module.exports = require('./lib/eql');
 
 },{"./lib/eql":48}],49:[function(require,module,exports){
