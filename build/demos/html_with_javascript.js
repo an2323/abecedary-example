@@ -25844,7 +25844,6 @@ AbecedaryReporter.prototype.constructor = AbecedaryReporter
 
 mocha.globals(['code']);
 mocha.setup({ ui: 'bdd',
-              bail: true, 
               reporter: AbecedaryReporter, 
               ignoreLeaks: false
             });

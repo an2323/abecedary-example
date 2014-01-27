@@ -1,7 +1,6 @@
 var assert = require('chai').assert,
     $ = require('jquery-browserify'),
-    sinon = require('sinon'),
-    sandbox = require('javascript-sandbox');
+    sinon = require('sinon');
 
 describe('add', function() {
 
@@ -12,22 +11,16 @@ describe('add', function() {
   describe('with JavaScript', function() {
     before(function() {
       var jsCode = $(code).filter('script').last().text()
-      var sandbox = new Sandbox(jsCode);
+      var eval(jsCode);
     });
     it('Be sure to define a function named `add`.', function() {
-      assert(sandbox.run(function() {
-        return typeof(add) === 'function';
-      });
+      assert(typeof(add) === 'function');
     });
     it('Your `add` function should take in two arguments.', function() {
-      assert(sandbox.run(function() {
-        return add.length == 2;
-      });
+      assert(add.length == 2);
     });
     it('`add` should return the result of adding the two arguments.', function() {
-      assert(sandbox.run(function() {
-        return (add(4, 8) == 12) && (add(1, 2) == 3)
-      });
+      assert(add(4, 8) == 12) && (add(1, 2) == 3));
     });
   });
 })

@@ -6749,6 +6749,7 @@ var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
 
 exports.bind = function(el, type, fn, capture){
   el[bind](prefix + type, fn, capture || false);
+
   return fn;
 };
 
@@ -6765,6 +6766,7 @@ exports.bind = function(el, type, fn, capture){
 
 exports.unbind = function(el, type, fn, capture){
   el[unbind](prefix + type, fn, capture || false);
+
   return fn;
 };
 });
@@ -8330,7 +8332,104 @@ module.exports = isArray || function (val) {
 };
 
 });
+require.register("component-props/index.js", function(exports, require, module){
+/**
+ * Global Names
+ */
+
+var globals = /\b(Array|Date|Object|Math|JSON)\b/g;
+
+/**
+ * Return immediate identifiers parsed from `str`.
+ *
+ * @param {String} str
+ * @param {String|Function} map function or prefix
+ * @return {Array}
+ * @api public
+ */
+
+module.exports = function(str, fn){
+  var p = unique(props(str));
+  if (fn && 'string' == typeof fn) fn = prefixed(fn);
+  if (fn) return map(str, p, fn);
+  return p;
+};
+
+/**
+ * Return immediate identifiers in `str`.
+ *
+ * @param {String} str
+ * @return {Array}
+ * @api private
+ */
+
+function props(str) {
+  return str
+    .replace(/\.\w+|\w+ *\(|"[^"]*"|'[^']*'|\/([^/]+)\//g, '')
+    .replace(globals, '')
+    .match(/[a-zA-Z_]\w*/g)
+    || [];
+}
+
+/**
+ * Return `str` with `props` mapped with `fn`.
+ *
+ * @param {String} str
+ * @param {Array} props
+ * @param {Function} fn
+ * @return {String}
+ * @api private
+ */
+
+function map(str, props, fn) {
+  var re = /\.\w+|\w+ *\(|"[^"]*"|'[^']*'|\/([^/]+)\/|[a-zA-Z_]\w*/g;
+  return str.replace(re, function(_){
+    if ('(' == _[_.length - 1]) return fn(_);
+    if (!~props.indexOf(_)) return _;
+    return fn(_);
+  });
+}
+
+/**
+ * Return unique array.
+ *
+ * @param {Array} arr
+ * @return {Array}
+ * @api private
+ */
+
+function unique(arr) {
+  var ret = [];
+
+  for (var i = 0; i < arr.length; i++) {
+    if (~ret.indexOf(arr[i])) continue;
+    ret.push(arr[i]);
+  }
+
+  return ret;
+}
+
+/**
+ * Map with prefix `str`.
+ */
+
+function prefixed(str) {
+  return function(_){
+    return str + _;
+  };
+}
+
+});
 require.register("component-to-function/index.js", function(exports, require, module){
+/**
+ * Module Dependencies
+ */
+
+try {
+  var expr = require('props');
+} catch(e) {
+  var expr = require('props-component');
+}
 
 /**
  * Expose `toFunction()`.
@@ -8401,8 +8500,8 @@ function stringToFunction(str) {
   // immediate such as "> 20"
   if (/^ *\W+/.test(str)) return new Function('_', 'return _ ' + str);
 
-  // properties such as "name.first" or "age > 18"
-  return new Function('_', 'return _.' + str);
+  // properties such as "name.first" or "age > 18" or "age > 18 && age < 36"
+  return new Function('_', 'return ' + get(str));
 }
 
 /**
@@ -8428,6 +8527,28 @@ function objectToFunction(obj) {
     }
     return true;
   }
+}
+
+/**
+ * Built the getter function. Supports getter style functions
+ *
+ * @param {String} str
+ * @return {String}
+ * @api private
+ */
+
+function get(str) {
+  var props = expr(str);
+  if (!props.length) return '_.' + str;
+
+  var val;
+  for(var i = 0, prop; prop = props[i]; i++) {
+    val = '_.' + prop;
+    val = "('function' == typeof " + val + " ? " + val + "() : " + val + ")";
+    str = str.replace(new RegExp(prop, 'g'), val);
+  }
+
+  return str;
 }
 
 });
@@ -21888,10 +22009,13 @@ require.register("codeschool-abecedary/index.js", function(exports, require, mod
 var stuff = require('stuff.js');
 var emitter = require('emitter');
 var Promise = require('promise');
+var extend = require('extend');
 
-function Abecedary(iframeUrl, template) {
+function Abecedary(iframeUrl, template, options) {
+  this.options = options || {};
   this.iframeUrl = iframeUrl;
   this.template = template;
+  this.options = extend({ ui: "bdd", bail: true, ignoreLeaks: false }, this.options);
   this.createSandbox();
 }
 emitter(Abecedary.prototype);
@@ -21900,17 +22024,22 @@ emitter(Abecedary.prototype);
 // Doesn't return anything, but emit a `complete` event when finished
 Abecedary.prototype.run = function(code, tests) {
   var _this = this;
-  this.createSandbox().then(function(context) {
-    _this.context = context;
 
+  this.sandbox.then(function(context) {
+    console.log('running code')
     var runner = [
-      'window.code = unescape("' + escape(code) + '");',
+      'window.code = JSON.parse('+JSON.stringify(JSON.stringify(code))+');',
       'mocha.suite.suites.shift()',
       tests || _this.tests,
       'window.mocha.run();',
       true
     ].join('\n');
-    context.evaljs(runner);
+
+    try {
+      context.evaljs(runner);
+    } catch(e) {
+      _this.emit('error', e);
+    }
   });
 }
 
@@ -21923,29 +22052,34 @@ Abecedary.prototype.close = function(data) {
 // Private
 //   Creates the stuff.js sandbox and returns a promise
 Abecedary.prototype.createSandbox = function() {
-  if(this.sandbox) { return this.sandbox; }
-
   var _this = this;
   this.sandbox = new Promise(function (resolve, reject) {
     stuff(_this.iframeUrl, function (context) {
       // Whenever we run tests in the sandbox, call runComplete
-      context.on('finished', _this.runComplete.bind(_this));
+      context.on('finished', runComplete.bind(_this));
+      context.on('loaded', loaded.bind(_this, { resolve: resolve, reject: reject }));
 
       // Contains the initial HTML and libraries needed to run tests,
       // as well as the tests themselves, but not the code
       context.load(_this.template);
 
-      resolve(context);
+      _this.context = context;
     });
   });
   return this.sandbox;
 }
 
-// Private
 //  Publicize the run is done
-Abecedary.prototype.runComplete = function(report) {
+var runComplete = function(report) {
   this.emit('complete', report);
 }
+
+// Setup Mocha upon completion
+var loaded = function(promise, report) {
+  this.context.evaljs('mocha.setup('+ JSON.stringify(this.options) +');');
+  promise.resolve(this.context);
+}
+
 
 module.exports = Abecedary;
 
@@ -21963,14 +22097,16 @@ module.exports = {
   answer: answer,
   syntax: 'html',
   name: "Mixed Mode Question",
-  question: "Create a script tag, and in it create a function named `add` which takes in two numbers and returns the result."
+  question: "Create a script tag, and in it create a function named `add` which takes in two numbers and returns the result.",
+  options:
+    bail: true
 }
 });
 require.register("html_with_javascript/code.js", function(exports, require, module){
 module.exports = '';
 });
 require.register("html_with_javascript/tests.js", function(exports, require, module){
-module.exports = 'var assert = require(\'chai\').assert,\n    $ = require(\'jquery-browserify\'),\n    sinon = require(\'sinon\'),\n    sandbox = require(\'javascript-sandbox\');\n\ndescribe(\'add\', function() {\n\n  it(\'Create a script tag to put your javascript.\', function() {\n    assert($(code).filter(\'script\').length > 0);\n  });\n\n  describe(\'with JavaScript\', function() {\n    before(function() {\n      var jsCode = $(code).filter(\'script\').last().text()\n      var sandbox = new Sandbox(jsCode);\n    });\n    it(\'Be sure to define a function named `add`.\', function() {\n      assert(sandbox.run(function() {\n        return typeof(add) === \'function\';\n      });\n    });\n    it(\'Your `add` function should take in two arguments.\', function() {\n      assert(sandbox.run(function() {\n        return add.length == 2;\n      });\n    });\n    it(\'`add` should return the result of adding the two arguments.\', function() {\n      assert(sandbox.run(function() {\n        return (add(4, 8) == 12) && (add(1, 2) == 3)\n      });\n    });\n  });\n})\n\n';
+module.exports = 'var assert = require(\'chai\').assert,\n    $ = require(\'jquery-browserify\'),\n    sinon = require(\'sinon\');\n\ndescribe(\'add\', function() {\n\n  it(\'Create a script tag to put your javascript.\', function() {\n    assert($(code).filter(\'script\').length > 0);\n  });\n\n  describe(\'with JavaScript\', function() {\n    before(function() {\n      var jsCode = $(code).filter(\'script\').last().text()\n      var eval(jsCode);\n    });\n    it(\'Be sure to define a function named `add`.\', function() {\n      assert(typeof(add) === \'function\');\n    });\n    it(\'Your `add` function should take in two arguments.\', function() {\n      assert(add.length == 2);\n    });\n    it(\'`add` should return the result of adding the two arguments.\', function() {\n      assert(add(4, 8) == 12) && (add(1, 2) == 3));\n    });\n  });\n})\n\n';
 });
 require.register("html_with_javascript/answer.js", function(exports, require, module){
 module.exports = '<script>\n  function add(one, two) {\n    return one + two;\n  }\n</script>';
@@ -21991,7 +22127,9 @@ module.exports = {
   tests: tests,
   answer: answer,
   syntax: 'javascript',
-  question: "Write an add function that adds two numbers and returns the result."
+  question: "Write an add function that adds two numbers and returns the result.",
+  options:
+    bail: true
 }
 });
 require.register("javascript/code.js", function(exports, require, module){
@@ -22020,6 +22158,7 @@ module.exports = {
   syntax: 'css',
   name: "Sample CSS Question",
   question: "Set the background color to red on the body."
+  options: {}
 }
 });
 require.register("css/code.js", function(exports, require, module){
@@ -22068,7 +22207,7 @@ dom('.nav-tabs a').on('click', function (e) {
 
 function teardown() {
   if(typeof(example) !== 'undefined') { 
-    //sandbox.close();
+    sandbox.close();
     editor.off('change', runWrapper);
     tests.off('change', runWrapper);
     dom('.CodeMirror').remove();
@@ -22085,7 +22224,7 @@ function setup(subexample) {
   dom('#question .instructions').text(example.question);
 
   // Ideally, this iFrame would be on a different domain.
-  sandbox = new Abcedary('http://localhost:4000/example/iframe.html', example.iframe);
+  sandbox = new Abcedary('http://localhost:4000/example/iframe.html', example.iframe, example.options);
 
   // Add all the needed content
   editor = new CodeMirror(dom('.editor')[0], extend({ value: example.code, syntax: example.syntax }, options));
@@ -22120,7 +22259,6 @@ function setup(subexample) {
   // Run the tests once to start things off.
   runWrapper();
 }
-
 
 setup('javascript');
 
@@ -22203,7 +22341,9 @@ require.alias("component-dom/lib/attributes.js", "boot/deps/dom/lib/attributes.j
 require.alias("component-dom/lib/events.js", "boot/deps/dom/lib/events.js");
 require.alias("component-each/index.js", "component-dom/deps/each/index.js");
 require.alias("component-to-function/index.js", "component-each/deps/to-function/index.js");
-
+require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
+require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
+require.alias("component-props/index.js", "component-props/index.js");
 require.alias("component-type/index.js", "component-each/deps/type/index.js");
 
 require.alias("component-event/index.js", "component-dom/deps/event/index.js");
@@ -22232,7 +22372,9 @@ require.alias("component-css/lib/computed.js", "component-dom/deps/css/lib/compu
 require.alias("component-css/index.js", "component-dom/deps/css/index.js");
 require.alias("component-each/index.js", "component-css/deps/each/index.js");
 require.alias("component-to-function/index.js", "component-each/deps/to-function/index.js");
-
+require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
+require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
+require.alias("component-props/index.js", "component-props/index.js");
 require.alias("component-type/index.js", "component-each/deps/type/index.js");
 
 require.alias("visionmedia-debug/index.js", "component-css/deps/debug/index.js");
@@ -22266,7 +22408,9 @@ require.alias("component-trim/index.js", "component-dom/deps/trim/index.js");
 require.alias("yields-isArray/index.js", "component-dom/deps/isArray/index.js");
 
 require.alias("component-to-function/index.js", "component-dom/deps/to-function/index.js");
-
+require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
+require.alias("component-props/index.js", "component-to-function/deps/props/index.js");
+require.alias("component-props/index.js", "component-props/index.js");
 require.alias("matthewp-keys/index.js", "component-dom/deps/keys/index.js");
 require.alias("matthewp-keys/index.js", "component-dom/deps/keys/index.js");
 require.alias("matthewp-keys/index.js", "matthewp-keys/index.js");
