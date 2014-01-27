@@ -1,3 +1,4 @@
 components
 lib/*/build
 lib/*/components
+lib/*/node_modules
