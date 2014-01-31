@@ -18,7 +18,8 @@
     "html_with_javascript",
     "javascript",
     "css",
-    "drive"
+    "drive",
+    "invalid_code"
   ],
   "scripts": [
     "index.js"

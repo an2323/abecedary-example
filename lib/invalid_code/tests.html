@@ -1,0 +1,15 @@
+var assert = require('chai').assert,
+    jshint = require('jshint').JSHINT;
+
+describe('add', function() {
+
+  it("Looks like there's a problem with your code.", function() {
+    if(!jshint(code)) {
+      throw jshint.errors[0];
+    }
+  });
+
+  it('Be sure to define a function named `add`.', function() {
+    eval(code);
+  });
+});

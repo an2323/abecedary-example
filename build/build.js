@@ -6749,7 +6749,6 @@ var bind = window.addEventListener ? 'addEventListener' : 'attachEvent',
 
 exports.bind = function(el, type, fn, capture){
   el[bind](prefix + type, fn, capture || false);
-
   return fn;
 };
 
@@ -6766,7 +6765,6 @@ exports.bind = function(el, type, fn, capture){
 
 exports.unbind = function(el, type, fn, capture){
   el[unbind](prefix + type, fn, capture || false);
-
   return fn;
 };
 });
@@ -8168,7 +8166,6 @@ function type(el) {
 
 });
 require.register("component-query/index.js", function(exports, require, module){
-
 function one(selector, el) {
   return el.querySelector(selector);
 }
@@ -8188,6 +8185,7 @@ exports.engine = function(obj){
   if (!obj.all) throw new Error('.all callback required');
   one = obj.one;
   exports.all = obj.all;
+  return exports;
 };
 
 });
@@ -9248,6 +9246,18 @@ exports.clone = function() {
   });
 
   return this.dom(out);
+};
+
+/**
+ * Focus the first dom element in our list.
+ * 
+ * @return {List} self
+ * @api public
+ */
+
+exports.focus = function(){
+  this[0].focus();
+  return this;
 };
 
 });
@@ -21896,7 +21906,7 @@ function Abecedary(iframeUrl, template, options) {
   this.options = options || {};
   this.iframeUrl = iframeUrl;
   this.template = template;
-  this.options = extend({ ui: "bdd", bail: true, ignoreLeaks: false }, this.options);
+  this.options = extend({ ui: "bdd", bail: true, ignoreLeaks: true }, this.options);
   this.createSandbox();
 }
 emitter(Abecedary.prototype);
@@ -22087,6 +22097,37 @@ module.exports = '<script>\n  function add(one, two) {\n    return one + two;\n 
 require.register("drive/iframe.js", function(exports, require, module){
 module.exports = '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Abecedary Tests</title>\n  </head>\n  <body>\n    <script src="/build/demos/drive.js"></script>\n  </body>\n</html>';
 });
+require.register("invalid_code/index.js", function(exports, require, module){
+var iframeTemplate = require('./iframe'); 
+var code = require('./code');
+var tests = require('./tests');
+var answer = require('./answer');
+
+module.exports = {
+  name: "Sample JavaScript Challenge with invalid Code",
+  iframe: iframeTemplate,
+  code: code,
+  tests: tests,
+  answer: answer,
+  syntax: 'javascript',
+  question: "This code is invalid, and we're giving a custom error message.",
+  options: {
+    bail: true
+  }
+}
+});
+require.register("invalid_code/code.js", function(exports, require, module){
+module.exports = 'this is a javascript error';
+});
+require.register("invalid_code/tests.js", function(exports, require, module){
+module.exports = 'var assert = require(\'chai\').assert,\n    jshint = require(\'jshint\').JSHINT;\n\ndescribe(\'add\', function() {\n\n  it("Looks like there\'s a problem with your code.", function() {\n    if(!jshint(code)) {\n      throw jshint.errors[0];\n    }\n  });\n\n  it(\'Be sure to define a function named `add`.\', function() {\n    eval(code);\n  });\n});';
+});
+require.register("invalid_code/answer.js", function(exports, require, module){
+module.exports = 'function add(one, two) {\n  return one + two;\n}';
+});
+require.register("invalid_code/iframe.js", function(exports, require, module){
+module.exports = '<!DOCTYPE html>\n<html>\n  <head>\n    <title>Abecedary Tests</title>\n  </head>\n  <body>\n    <script src="/build/demos/invalid_code.js"></script>\n  </body>\n</html>';
+});
 require.register("boot/index.js", function(exports, require, module){
 var dom = require('dom');
 var debounce = require('debounce');
@@ -22156,6 +22197,7 @@ function setup(subexample) {
   // Run whenever a test run completes
   sandbox.on('complete', function(results) {
     console.log('sandbox run complete: ');
+    console.log(results);
 
     dom('#content .stats').text("Passing: " + results.stats.passes + " / failures: " + results.stats.failures + " / duration: " + results.stats.duration);
 
@@ -22165,8 +22207,10 @@ function setup(subexample) {
     for(var test in results.passes) {
       list.append("<li class='success'>"+results.passes[test].title+"</li>");
     }
+    var message;
     for(var test in results.failures) {
-      list.append("<li class='failure'>"+results.failures[test].title+"</li>");
+      message = results.failures[test].err.reason ? ("<p>" + results.failures[test].err.reason + "</p>") : "";
+      list.append("<li class='failure'><p>"+results.failures[test].title+"</p>"+message+"</li>");
     }
   });
 
@@ -22174,12 +22218,14 @@ function setup(subexample) {
   runWrapper();
 }
 
-setup('drive');
+setup('invalid_code');
 
 dom('#examples a').on('click', function() {
   setup(dom(this).attr('data-example'));
 });
 });
+
+
 
 
 
@@ -22376,4 +22422,11 @@ require.alias("drive/answer.js", "boot/deps/drive/answer.js");
 require.alias("drive/iframe.js", "boot/deps/drive/iframe.js");
 require.alias("drive/index.js", "boot/deps/drive/index.js");
 require.alias("drive/index.js", "drive/index.js");
+require.alias("invalid_code/index.js", "boot/deps/invalid_code/index.js");
+require.alias("invalid_code/code.js", "boot/deps/invalid_code/code.js");
+require.alias("invalid_code/tests.js", "boot/deps/invalid_code/tests.js");
+require.alias("invalid_code/answer.js", "boot/deps/invalid_code/answer.js");
+require.alias("invalid_code/iframe.js", "boot/deps/invalid_code/iframe.js");
+require.alias("invalid_code/index.js", "boot/deps/invalid_code/index.js");
+require.alias("invalid_code/index.js", "invalid_code/index.js");
 require.alias("boot/index.js", "boot/index.js");
